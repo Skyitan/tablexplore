@@ -1,21 +1,9 @@
 """
+    调色板工具插件（TableExplore）
+    创建于 2021 年 1 月
+    版权所有 (C) Damien Farrell
 
-    Created January 2021
-    Copyright (C) Damien Farrell
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    提供调色板查看、生成与保存功能。
 """
 
 from __future__ import absolute_import, division, print_function
@@ -40,12 +28,12 @@ class ColormapsPlugin(Plugin):
     #uncomment capabilities list to appear in menu
     capabilities = ['gui']
     requires = ['']
-    menuentry = 'Colormap Tool'
+    menuentry = '调色板工具'
     iconfile = 'colormaps.png'
-    name = 'Colormap Tool'
+    name = '调色板工具'
 
     def __init__(self, parent=None, table=None):
-        """Customise this and/or doFrame for your widgets"""
+        """为你的控件定制初始化逻辑或创建布局"""
 
         if parent==None:
             return
@@ -60,7 +48,7 @@ class ColormapsPlugin(Plugin):
         return
 
     def createWidgets(self):
-        """Create widgets if GUI plugin"""
+        """如果为 GUI 插件，则创建小部件"""
 
         self.main = QWidget()
         l = self.layout = QVBoxLayout()
@@ -77,7 +65,7 @@ class ColormapsPlugin(Plugin):
         bw = QWidget(parent)
         bw.setMaximumWidth(200)
         vbox = QVBoxLayout(bw)
-        button = QPushButton("Sample Colormaps")
+        button = QPushButton("示例调色板")
         button.clicked.connect(self.showColorMaps)
         vbox.addWidget(button)
 
@@ -85,26 +73,26 @@ class ColormapsPlugin(Plugin):
         self.current_w = cb = QComboBox()
         cb.addItems(['']+list(current.keys()))
         cb.currentIndexChanged.connect(self.loadCustom)
-        vbox.addWidget(QLabel('load cmap colors:'))
+        vbox.addWidget(QLabel('加载调色板颜色：'))
         vbox.addWidget(cb)
 
-        button = QPushButton("Random Colors")
+        button = QPushButton("随机颜色")
         button.clicked.connect(self.makeRandom)
         vbox.addWidget(button)
         self.ncolors = w = QSpinBox()
         w.setValue(5)
         w.setRange(2,20)
-        vbox.addWidget(QLabel('num colors:'))
+        vbox.addWidget(QLabel('颜色数量：'))
         vbox.addWidget(w)
 
-        vbox.addWidget(QLabel('type:'))
+        vbox.addWidget(QLabel('类型：'))
         self.cmaptype_w = cb = QComboBox()
-        cb.addItems(['discrete','interpolated'])
+        cb.addItems(['离散','插值'])
         vbox.addWidget(cb)
-        button = QPushButton("Update")
+        button = QPushButton("更新")
         button.clicked.connect(self.update)
         vbox.addWidget(button)
-        button = QPushButton("Save")
+        button = QPushButton("保存")
         button.clicked.connect(self.save)
         vbox.addWidget(button)
         return bw
@@ -194,7 +182,7 @@ class ColormapsPlugin(Plugin):
         """Save colormap to file and register it"""
 
         current = plotting.load_colormaps()
-        name, ok = QInputDialog.getText(self.main, 'Colormap name', 'Enter name:')
+        name, ok = QInputDialog.getText(self.main, '调色板名称', '输入名称：')
         if not ok:
             return
         #set name

@@ -2,23 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-    tableexplore plotting module
-    Created May 2017
-    Copyright (C) Damien Farrell
+    tablexplore 绘图模块
+    创建于 2017 年 5 月
+    版权所有 (C) Damien Farrell
 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    提供用于在应用中显示、管理和导出 matplotlib 图形的类与辅助函数。
 """
 
 from __future__ import absolute_import, division, print_function
@@ -89,7 +77,7 @@ valid_kwds = {'line': ['alpha', 'colormap', 'grid', 'legend', 'linestyle','ms',
             }
 
 def defaultOptions():
-    """Get default plotting options"""
+    """获取绘图默认选项"""
 
     opts = {'general': MPLBaseOptions(),
             'format': FormatOptions(),
@@ -99,7 +87,7 @@ def defaultOptions():
     return opts
 
 def update_colormaps():
-    """Load stored colormaps"""
+    """加载已保存的配色方案"""
 
     cmaps = load_colormaps()
     if cmaps == None:
@@ -133,7 +121,7 @@ class PlotWidget(FigureCanvas):
         self.ax = self.figure.add_subplot(111)
 
 class PlotViewer(QWidget):
-    """Plot viewer class"""
+    """绘图查看器类"""
     def __init__(self, table, parent=None):
 
         super(PlotViewer, self).__init__(parent)
@@ -149,7 +137,7 @@ class PlotViewer(QWidget):
         return
 
     def addPlotWidget(self):
-        """Create mpl plot canvas and toolbar"""
+        """创建 Matplotlib 画布与工具栏"""
 
         layout = self.left
         vbox = self.vbox
@@ -167,11 +155,11 @@ class PlotViewer(QWidget):
         #a.triggered.connect(self.canvasResize)
         #self.toolbar.addAction(a)
         iconfile = os.path.join(iconpath,'reduce.png')
-        a = QAction(QIcon(iconfile), "Reduce elements",  self)
+        a = QAction(QIcon(iconfile), "缩小元素",  self)
         a.triggered.connect(lambda: self.zoom(zoomin=False))
         self.toolbar.addAction(a)
         iconfile = os.path.join(iconpath,'enlarge.png')
-        a = QAction(QIcon(iconfile), "Enlarge elements",  self)
+        a = QAction(QIcon(iconfile), "放大元素",  self)
         a.triggered.connect(lambda: self.zoom(zoomin=True))
         self.toolbar.addAction(a)
         vbox.addWidget(self.toolbar)
@@ -179,17 +167,14 @@ class PlotViewer(QWidget):
         return
 
     def updateSeries(self, event=None):
-        """Update series with new plots"""
+        """使用新图更新序列"""
 
         data = self.table.getSelectedDataFrame()
         self.seriesopts.series = self.getSeries(data)
         return
 
     def customiseSeries(self):
-        """
-        Show custom options for current plot series. Allows plot types to
-        be specified per series and uses a custom plot function.
-        """
+        """显示当前序列的自定义选项，允许为每个序列指定绘图类型并使用自定义绘图函数。"""
 
         if self.seriesopts.series == {}:
             self.updateSeries()
@@ -198,7 +183,7 @@ class PlotViewer(QWidget):
         return
 
     def customPlot(self):
-        """plot custom series """
+        """绘制自定义序列"""
 
         self.applyPlotoptions()
         self.setStyle()
@@ -233,7 +218,7 @@ class PlotViewer(QWidget):
         return dict((k, kwds[k]) for k in valid_kwds[kind] if k in kwds)
 
     def colorsfromColormap(self, df, cmap):
-        """Column colors from cmap"""
+        """根据 colormap 生成列颜色"""
 
         cols = df.columns
         clrs = util.gen_colors(cmap,len(cols))
@@ -241,7 +226,7 @@ class PlotViewer(QWidget):
         return colordict
 
     def showTools(self):
-        """Show/hide tools dock"""
+        """显示/隐藏工具停靠区"""
 
         if self.dock.isHidden():
             self.dock.show()
@@ -250,7 +235,7 @@ class PlotViewer(QWidget):
         return
 
     def createWidgets(self):
-        """Create widgets. Plot on left and dock for tools on right."""
+        """创建控件：左侧绘图、右侧工具停靠。"""
 
         self.main = QWidget(self)
         hbox = QHBoxLayout(self)
@@ -261,7 +246,7 @@ class PlotViewer(QWidget):
         return
 
     def setFigure(self, figure):
-        """Recreate canvas with given figure"""
+        """使用给定的 figure 重新创建画布"""
 
         self.clear()
         self.canvas.figure = figure
@@ -277,14 +262,14 @@ class PlotViewer(QWidget):
         return size
 
     def canvasResize(self, pad=50):
-        """Trigger resize canvas"""
+        """触发画布大小调整"""
 
         self.canvas.setGeometry(QtCore.QRect(0, pad, self.width(), self.height()-pad))
         self.canvas.updateGeometry()
         return
 
     def createOptions(self):
-        """Create option attributes for plotter"""
+        """创建绘图器的选项属性"""
 
         self.opts = {'general':MPLBaseOptions(),
                     'format':FormatOptions(),
@@ -294,7 +279,7 @@ class PlotViewer(QWidget):
         return
 
     def simple_plot(self, df):
-        """test plot"""
+        """简单测试绘图"""
 
         kwds = self.opts['general'].kwds
         self.ax = self.fig.add_subplot(111)
@@ -1447,11 +1432,10 @@ class BaseOptions(object):
         return
 
     def showDialog(self, parent, wrap=2, section_wrap=2, style=None):
-        """Auto create widgets for corresponding options and
-           and return the dialog.
-          Args:
-            parent: parent frame
-            wrap: wrap for internal widgets
+        """自动为对应选项创建小部件并返回对话框。
+           参数:
+             parent: 父窗口
+             wrap: 内部控件换行
         """
 
         self.style = style
@@ -1545,7 +1529,7 @@ class MPLBaseOptions(BaseOptions):
         return
 
     def update(self, df):
-        """Update data widget(s) when dataframe changes"""
+        """当 DataFrame 更改时更新数据控件"""
 
         if util.check_multiindex(df.columns) == 1:
             cols = list(df.columns.get_level_values(0))
@@ -1560,7 +1544,7 @@ class MPLBaseOptions(BaseOptions):
         return
 
 class FormatOptions(BaseOptions):
-    """This class also provides custom tools for adding items to the plot"""
+    """格式选项类，提供用于调整绘图格式的工具"""
     def __init__(self):
         """Setup variables"""
 
@@ -1595,7 +1579,7 @@ class FormatOptions(BaseOptions):
         return
 
 class AnnotationOptions(BaseOptions):
-    """This class also provides custom tools for adding items to the plot"""
+    """注释选项类，提供用于向绘图添加注释和标注的工具"""
     def __init__(self):
         """Setup variables"""
 
@@ -1706,7 +1690,7 @@ class SeriesOptions(BaseOptions):
 
     def showDialog(self, parent=None):
 
-        dlg = self.dlg = SimpleDialog(parent, title='Series Options')
+        dlg = self.dlg = SimpleDialog(parent, title='序列选项')
         self.createSeriesWidgets(dlg)
         btnbox = self.createButtons(dlg)
         return dlg
@@ -1716,13 +1700,13 @@ class SeriesOptions(BaseOptions):
         l = parent.layout
         bw = self.button_widget = QWidget(parent)
         vbox = QHBoxLayout(bw)
-        button = QPushButton("Cancel")
+        button = QPushButton("取消")
         button.clicked.connect(self.close)
         vbox.addWidget(button)
-        button = QPushButton("Clear")
+        button = QPushButton("清除")
         button.clicked.connect(self.update)
         vbox.addWidget(button)
-        button = QPushButton("Update")
+        button = QPushButton("更新")
         button.clicked.connect(self.update)
         vbox.addWidget(button)
         l.addWidget(bw)

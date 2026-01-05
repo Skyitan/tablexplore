@@ -36,11 +36,11 @@ from . import util, core
 module_path = os.path.dirname(os.path.abspath(__file__))
 iconpath = os.path.join(module_path, 'icons')
 
-def getName(parent, current='', txt='Enter value'):
-    """Wrapper for text inpuit dialog"""
+def getName(parent, current='', txt='请输入值'):
+    """文本输入对话框包装函数"""
 
     name, ok = QInputDialog().getText(parent, txt,
-                                     "Name:", QLineEdit.Normal, text=current)
+                                     "名称：", QLineEdit.Normal, text=current)
     if ok:
         return name
 
@@ -430,10 +430,10 @@ class PlainTextEditor(QPlainTextEdit):
     def contextMenuEvent(self, event):
 
         menu = QMenu(self)
-        copyAction = menu.addAction("Copy")
-        clearAction = menu.addAction("Clear")
-        zoominAction = menu.addAction("Zoom In")
-        zoomoutAction = menu.addAction("Zoom Out")
+        copyAction = menu.addAction("复制")
+        clearAction = menu.addAction("清除")
+        zoominAction = menu.addAction("放大")
+        zoomoutAction = menu.addAction("缩小")
         action = menu.exec_(self.mapToGlobal(event.pos()))
         if action == copyAction:
             self.copy()
@@ -445,8 +445,8 @@ class PlainTextEditor(QPlainTextEdit):
             self.zoom(-1)
 
 class TextDialog(QDialog):
-    """Text edit dialog"""
-    def __init__(self, parent, text='', title='Text', width=400, height=300):
+    """文本编辑对话框"""
+    def __init__(self, parent, text='', title='文本', width=400, height=300):
         super(TextDialog, self).__init__(parent)
         self.resize(width, height)
         self.setWindowTitle(title)
@@ -465,8 +465,8 @@ class TextDialog(QDialog):
         return
 
 class MultipleInputDialog(QDialog):
-    """Qdialog with multiple inputs"""
-    def __init__(self, parent, options=None, title='Input', width=400, height=200):
+    """带多个输入项的对话框"""
+    def __init__(self, parent, options=None, title='输入', width=400, height=200):
         super(MultipleInputDialog, self).__init__(parent)
         self.values = None
         self.accepted = False
@@ -506,14 +506,14 @@ class ImportDialog(QDialog):
                     self.size(),
                     QGuiApplication.primaryScreen().availableGeometry(),
                 ))
-        self.setWindowTitle('Import File')
+        self.setWindowTitle('导入文件')
         self.createWidgets()
         self.update()
         self.show()
         return
 
     def createWidgets(self):
-        """Create widgets"""
+        """创建控件"""
 
         delimiters = [',',r'\t',' ','\s+',';','/','&','|','^','+','-']
         encodings = ['utf-8','ascii','latin-1','iso8859_15','cp037','cp1252','big5','euc_jp',
@@ -528,29 +528,29 @@ class ImportDialog(QDialog):
                 'other':['rowsperfile']}
         grps = OrderedDict(sorted(grps.items()))
         opts = self.opts = {'sep':{'type':'combobox','default':',','editable':True,
-                        'items':delimiters, 'tooltip':'seperator'},
+                'items':delimiters, 'tooltip':'分隔符'},
                      #'header':{'type':'entry','default':0,'label':'header',
                      #          'tooltip':'position of column header'},
                      'decimal':{'type':'combobox','default':'.','items':['.',','],
-                                'tooltip':'decimal point symbol'},
-                     'comment':{'type':'entry','default':'#','label':'comment',
-                                'tooltip':'comment symbol'},
-                     'skipinitialspace':{'type':'checkbox','default':0,'label':'skip initial space',
-                                'tooltip':'skip initial space'},
-                     'skiprows':{'type':'spinbox','default':0,'label':'skiprows',
-                                'tooltip':'rows to skip'},
-                     'skip_blank_lines':  {'type':'checkbox','default':0,'label':'skip blank lines',
-                                'tooltip':'do not use blank lines'},
-                     'parse_dates':  {'type':'checkbox','default':1,'label':'parse dates',
-                                'tooltip':'try to parse date/time columns'},
+                                'tooltip':'小数点符号'},
+                     'comment':{'type':'entry','default':'#','label':'注释',
+                                'tooltip':'注释符号'},
+                     'skipinitialspace':{'type':'checkbox','default':0,'label':'跳过初始空格',
+                                'tooltip':'跳过初始空格'},
+                     'skiprows':{'type':'spinbox','default':0,'label':'跳过行数',
+                                'tooltip':'要跳过的行数'},
+                     'skip_blank_lines':  {'type':'checkbox','default':0,'label':'跳过空行',
+                                'tooltip':'不要使用空行'},
+                     'parse_dates':  {'type':'checkbox','default':1,'label':'解析日期',
+                                'tooltip':'尝试解析日期/时间列'},
                      'time format': {'type':'combobox','default':'','items':timeformats,
-                                'tooltip':'date/time format'},
+                                'tooltip':'日期/时间格式'},
                      'encoding':{'type':'combobox','default':'utf-8','items':encodings,
-                                'tooltip':'file encoding'},
+                                'tooltip':'文件编码'},
                      'engine':{'type':'combobox','default':'python','items':engines,
-                                'tooltip':'import engine'},
-                     'rowsperfile':{'type':'spinbox','default':0,'label':'rows per file',
-                                'tooltip':'rows to read'},
+                                'tooltip':'导入引擎'},
+                     'rowsperfile':{'type':'spinbox','default':0,'label':'每文件行数',
+                                'tooltip':'读取的行数'},
                      }
 
         optsframe, self.widgets = dialogFromOptions(self, opts, grps, wrap=1, section_wrap=1)
@@ -583,13 +583,13 @@ class ImportDialog(QDialog):
 
         bw = self.button_widget = QWidget(parent)
         vbox = QVBoxLayout(bw)
-        button = QPushButton("Update")
+        button = QPushButton("更新")
         button.clicked.connect(self.update)
         vbox.addWidget(button)
-        button = QPushButton("Import")
+        button = QPushButton("导入")
         button.clicked.connect(self.doImport)
         vbox.addWidget(button)
-        button = QPushButton("Cancel")
+        button = QPushButton("取消")
         button.clicked.connect(self.quit)
         vbox.addWidget(button)
         return bw
@@ -607,7 +607,7 @@ class ImportDialog(QDialog):
         except Exception as e:
             print(e)
             self.textarea.insertPlainText(str(e)+'\n')
-            self.textarea.insertPlainText('try another encoding?')
+            self.textarea.insertPlainText('尝试其他编码？')
         return
 
     def update(self):
@@ -738,7 +738,7 @@ class SimpleDialog(QDialog):
         return
 
 class MultipleFilesDialog(QDialog):
-    def __init__(self, parent, title='Import Multiple'):
+    def __init__(self, parent, title='批量导入'):
         super(MultipleFilesDialog, self).__init__(parent)
         self.parent = parent
         self.setWindowTitle(title)
@@ -751,10 +751,10 @@ class MultipleFilesDialog(QDialog):
     def createWidgets(self):
 
         l=self.layout
-        button = QPushButton("Select Files")
+        button = QPushButton("选择文件")
         button.clicked.connect(self.parent.importMultipleFiles)
         l.addWidget(button)
-        button = QPushButton("Select a Folder")
+        button = QPushButton("选择文件夹")
         button.clicked.connect(lambda: self.parent.importMultipleFiles(folders=True))
         l.addWidget(button)
         #self.cb = QCheckBox()
@@ -763,7 +763,7 @@ class MultipleFilesDialog(QDialog):
         return
 
 class BasicDialog(QDialog):
-    """Qdialog for table operations interfaces"""
+    """用于表格操作界面的通用对话框基类"""
     def __init__(self, parent, df, title=None, app=None):
 
         super(BasicDialog, self).__init__(parent)
@@ -780,7 +780,7 @@ class BasicDialog(QDialog):
         return
 
     def createWidgets(self):
-        """Create widgets - override this"""
+        """创建控件 - 子类应重写此方法"""
 
         cols = list(self.df.columns)
 
@@ -789,29 +789,29 @@ class BasicDialog(QDialog):
         bw = self.button_widget = QWidget(parent)
         vbox = QVBoxLayout(bw)
         vbox.setAlignment(QtCore.Qt.AlignTop)
-        button = QPushButton("Apply")
+        button = QPushButton("应用")
         button.clicked.connect(self.apply)
         vbox.addWidget(button)
         if hasattr(self.parent, 'subtable'):
-            button = QPushButton("Copy to sub-table")
+            button = QPushButton("复制到子表")
             button.clicked.connect(self.copy_to_subtable)
             vbox.addWidget(button)
-        button = QPushButton("Copy to clipboard")
+        button = QPushButton("复制到剪贴板")
         button.clicked.connect(self.copy_to_clipboard)
         vbox.addWidget(button)
-        button = QPushButton("Copy to new sheet")
+        button = QPushButton("复制到新表单")
         button.clicked.connect(self.copy_to_sheet)
         vbox.addWidget(button)
-        button = QPushButton("Export result")
+        button = QPushButton("导出结果")
         button.clicked.connect(self.export)
         vbox.addWidget(button)
-        button = QPushButton("Close")
+        button = QPushButton("关闭")
         button.clicked.connect(self.close)
         vbox.addWidget(button)
         return bw
 
     def apply(self):
-        """Override this"""
+        """子类应重写以执行应用操作"""
         return
 
     def copy_to_subtable(self):
@@ -826,8 +826,8 @@ class BasicDialog(QDialog):
 
         if self.app == None:
             return
-        name, ok = QInputDialog().getText(self, "Enter Sheet Name",
-                                             "Name:", QLineEdit.Normal)
+        name, ok = QInputDialog().getText(self, "输入工作表名称",
+                             "名称：", QLineEdit.Normal)
         if ok and name:
             self.app.addSheet(name=name, df=self.table.model.df)
         return
@@ -860,13 +860,13 @@ class BasicDialog(QDialog):
 
 class AggregateDialog(BasicDialog):
     """Qdialog with multiple inputs"""
-    def __init__(self, parent, df, title='Groupby-Aggregate'):
+    def __init__(self, parent, df, title='分组并汇总'):
 
         BasicDialog.__init__(self, parent, df, title)
         return
 
     def createWidgets(self):
-        """Create widgets"""
+        """创建小部件"""
 
         cols = list(self.df.columns)
         funcs = ['sum','mean','size','std','min','max','var']
@@ -879,17 +879,17 @@ class AggregateDialog(BasicDialog):
         w = self.groupbyw = QListWidget(main)
         w.setSelectionMode(QAbstractItemView.MultiSelection)
         w.addItems(cols)
-        l.addWidget(QLabel('Group by'))
+        l.addWidget(QLabel('分组依据'))
         l.addWidget(w)
         w = self.aggw = QListWidget(main)
         w.setSelectionMode(QAbstractItemView.MultiSelection)
         w.addItems(cols)
-        l.addWidget(QLabel('Aggregate on'))
+        l.addWidget(QLabel('汇总列'))
         l.addWidget(w)
         w = self.funcw = QListWidget(main)
         w.setSelectionMode(QAbstractItemView.MultiSelection)
         w.addItems(funcs)
-        l.addWidget(QLabel('Functions'))
+        l.addWidget(QLabel('函数'))
         l.addWidget(w)
 
         self.table = core.DataFrameTable(self, font=core.FONT)
@@ -899,7 +899,7 @@ class AggregateDialog(BasicDialog):
         return
 
     def customButtons():
-        vbox.addWidget(QLabel('map cols to functions'))
+        vbox.addWidget(QLabel('将列映射到函数'))
         mapcolsbtn = QCheckBox()
         vbox.addWidget(mapcolsbtn)
 
@@ -922,13 +922,13 @@ class AggregateDialog(BasicDialog):
 
 class PivotDialog(BasicDialog):
     """Dialog to pivot table"""
-    def __init__(self, parent, df, title='Pivot'):
+    def __init__(self, parent, df, title='透视'):
 
         BasicDialog.__init__(self, parent, df, title)
         return
 
     def createWidgets(self):
-        """Create widgets"""
+        """创建小部件"""
 
         cols = list(self.df.columns)
         funcs = ['sum','mean','size','std','min','max','var']
@@ -941,21 +941,21 @@ class PivotDialog(BasicDialog):
         w = self.columnsw = QListWidget(main)
         #w.setSelectionMode(QAbstractItemView.MultiSelection)
         w.addItems(cols)
-        l.addWidget(QLabel('Columns'))
+        l.addWidget(QLabel('列'))
         l.addWidget(w)
         w = self.idxw = QListWidget(main)
         #w.setSelectionMode(QAbstractItemView.MultiSelection)
         w.addItems(cols)
-        l.addWidget(QLabel('Index'))
+        l.addWidget(QLabel('索引'))
         l.addWidget(w)
         w = self.valuesw = QListWidget(main)
         w.setSelectionMode(QAbstractItemView.MultiSelection)
         w.addItems(cols)
-        l.addWidget(QLabel('Values'))
+        l.addWidget(QLabel('值'))
         l.addWidget(w)
         w = self.aggw = QListWidget(main)
         w.addItems(funcs)
-        l.addWidget(QLabel('Aggregate function'))
+        l.addWidget(QLabel('聚合函数'))
         l.addWidget(w)
 
         self.table = core.DataFrameTable(self, font=core.FONT)
@@ -984,13 +984,13 @@ class PivotDialog(BasicDialog):
 
 class MeltDialog(BasicDialog):
     """Dialog to melt table"""
-    def __init__(self, parent, df, title='Melt'):
+    def __init__(self, parent, df, title='展开'):
 
         BasicDialog.__init__(self, parent, df, title)
         return
 
     def createWidgets(self):
-        """Create widgets"""
+        """创建小部件"""
 
         cols = list(self.df.columns)
         funcs = ['sum','mean','size','std','min','max','var']
@@ -1003,15 +1003,15 @@ class MeltDialog(BasicDialog):
         w = self.idvarsw = QListWidget(main)
         w.setSelectionMode(QAbstractItemView.MultiSelection)
         w.addItems(cols)
-        l.addWidget(QLabel('ID vars'))
+        l.addWidget(QLabel('ID 列'))
         l.addWidget(w)
         w = self.valuevarsw = QListWidget(main)
         w.setSelectionMode(QAbstractItemView.MultiSelection)
         w.addItems(cols)
-        l.addWidget(QLabel('Value vars'))
+        l.addWidget(QLabel('值列'))
         l.addWidget(w)
         w = self.varnamew = QLineEdit('var')
-        l.addWidget(QLabel('Var name'))
+        l.addWidget(QLabel('变量名'))
         l.addWidget(w)
 
         self.table = core.DataFrameTable(self, font=core.FONT)
@@ -1034,14 +1034,14 @@ class MeltDialog(BasicDialog):
 
 class MergeDialog(BasicDialog):
     """Dialog to melt table"""
-    def __init__(self, parent, df, df2=None, title='Merge Tables', app=None):
+    def __init__(self, parent, df, df2=None, title='合并表', app=None):
 
         self.df2 = df2
         BasicDialog.__init__(self, parent, df, title, app)
         return
 
     def createWidgets(self):
-        """Create widgets"""
+        """创建小部件"""
 
         if self.df2 is None:
             if hasattr(self.parent, 'subtable') and self.parent.subtable != None:
@@ -1061,38 +1061,38 @@ class MergeDialog(BasicDialog):
         l = QVBoxLayout(main)
         w = self.ops_w = QComboBox(main)
         w.addItems(ops)
-        l.addWidget(QLabel('Operation'))
+        l.addWidget(QLabel('操作'))
         l.addWidget(w)
         w = self.lefton_w = QListWidget(main)
         w.setSelectionMode(QAbstractItemView.MultiSelection)
         w.addItems(cols)
-        l.addWidget(QLabel('Left on'))
+        l.addWidget(QLabel('左侧键'))
         l.addWidget(w)
         w = self.righton_w = QListWidget(main)
         w.setSelectionMode(QAbstractItemView.MultiSelection)
         w.addItems(cols2)
-        l.addWidget(QLabel('Right on'))
+        l.addWidget(QLabel('右侧键'))
         l.addWidget(w)
 
         w = self.leftindex_w = QCheckBox(main)
         w.setChecked(False)
-        l.addWidget(QLabel('Use left index'))
+        l.addWidget(QLabel('使用左侧索引'))
         l.addWidget(w)
         w = self.rightindex_w = QCheckBox(main)
         w.setChecked(False)
-        l.addWidget(QLabel('Use right index'))
+        l.addWidget(QLabel('使用右侧索引'))
         l.addWidget(w)
 
         w = self.how_w = QComboBox(main)
         w.addItems(how)
-        l.addWidget(QLabel('How'))
+        l.addWidget(QLabel('合并方式'))
         l.addWidget(w)
 
         w = self.left_suffw = QLineEdit('_1')
-        l.addWidget(QLabel('Left suffix'))
+        l.addWidget(QLabel('左侧后缀'))
         l.addWidget(w)
         w = self.right_suffw = QLineEdit('_2')
-        l.addWidget(QLabel('Right suffix'))
+        l.addWidget(QLabel('右侧后缀'))
         l.addWidget(w)
 
         self.table = core.DataFrameTable(self, font=core.FONT)
@@ -1145,7 +1145,7 @@ class MergeDialog(BasicDialog):
 
 class ConvertTypesDialog(BasicDialog):
     """Dialog to melt table"""
-    def __init__(self, parent, df, title='Convert types'):
+    def __init__(self, parent, df, title='转换类型'):
 
         BasicDialog.__init__(self, parent, df, title)
         return
@@ -1155,19 +1155,19 @@ class ConvertTypesDialog(BasicDialog):
         bw = self.button_widget = QWidget(parent)
         vbox = QVBoxLayout(bw)
         vbox.setAlignment(QtCore.Qt.AlignTop)
-        button = QPushButton("Apply")
+        button = QPushButton("应用")
         button.clicked.connect(self.apply)
         vbox.addWidget(button)
-        button = QPushButton("Copy to new sheet")
+        button = QPushButton("复制到新表单")
         button.clicked.connect(self.copy_to_sheet)
         vbox.addWidget(button)
-        button = QPushButton("Close")
+        button = QPushButton("关闭")
         button.clicked.connect(self.close)
         vbox.addWidget(button)
         return bw
 
     def createWidgets(self):
-        """Create widgets"""
+        """创建小部件"""
 
         cols = list(self.df.columns)
 
@@ -1216,7 +1216,7 @@ class Renamer():
 
 class ManageColumnsDialog(BasicDialog):
     """Qdialog for column re-arranging"""
-    def __init__(self, parent, df, title='Manage Columns', app=None):
+    def __init__(self, parent, df, title='管理列', app=None):
 
         BasicDialog.__init__(self, parent, df, title)
         self.table = self.parent.table
@@ -1225,7 +1225,7 @@ class ManageColumnsDialog(BasicDialog):
         return
 
     def createWidgets(self):
-        """Create widgets - override this"""
+        """创建小部件 - 子类应重写此方法"""
 
         cols = list(self.df.columns)
         vbox = QHBoxLayout(self)
@@ -1247,22 +1247,22 @@ class ManageColumnsDialog(BasicDialog):
         bw = self.button_widget = QWidget(parent)
         vbox = QVBoxLayout(bw)
         vbox.setAlignment(QtCore.Qt.AlignTop)
-        button = QPushButton("Delete Selected")
+        button = QPushButton("删除所选")
         button.clicked.connect(self.delete)
         vbox.addWidget(button)
-        button = QPushButton("Update")
+        button = QPushButton("更新")
         button.clicked.connect(self.update)
         vbox.addWidget(button)
-        button = QPushButton("Sort Columns")
+        button = QPushButton("排序列")
         button.clicked.connect(self.sort)
         vbox.addWidget(button)
-        button = QPushButton("De-Duplicate")
+        button = QPushButton("去重")
         button.clicked.connect(self.deduplicate)
         vbox.addWidget(button)
-        button = QPushButton("Undo")
+        button = QPushButton("撤销")
         button.clicked.connect(self.undo)
         vbox.addWidget(button)
-        button = QPushButton("Close")
+        button = QPushButton("关闭")
         button.clicked.connect(self.close)
         vbox.addWidget(button)
         return bw
@@ -1316,8 +1316,8 @@ class ManageColumnsDialog(BasicDialog):
             if type(c) in [float,int]:
                 f=True
         if f is True:
-            reply = QMessageBox.question(self, 'Convert?',
-                                 'Some columns are numeric. Convert to string?',
+            reply = QMessageBox.question(self, '转换？',
+                                 '检测到某些列为数值类型，是否转换为字符串？',
                                   QMessageBox.Yes, QMessageBox.No)
             if reply == QMessageBox.Yes:
                 self.convert()
@@ -1345,7 +1345,7 @@ class PreferencesDialog(QDialog):
 
         super(PreferencesDialog, self).__init__(parent)
         self.parent = parent
-        self.setWindowTitle('Preferences')
+        self.setWindowTitle('首选项')
         self.resize(400, 200)
         self.setGeometry(QtCore.QRect(300,300, 600, 200))
         self.setMaximumWidth(600)
@@ -1355,7 +1355,7 @@ class PreferencesDialog(QDialog):
         return
 
     def createWidgets(self, options):
-        """create widgets"""
+        """创建小部件"""
 
         import pylab as plt
 
@@ -1373,23 +1373,23 @@ class PreferencesDialog(QDialog):
 
         self.opts = {
                 #'rowheight':{'type':'spinbox','default':18,'range':(5,50),'label':'Row height'},
-                'ALIGNMENT':{'type':'combobox','default':'w','items':['left','right','center'],'label':'Text Align'},
-                'BGCOLOR':{'type':'colorbutton','default':options['BGCOLOR'],'label':'Background Color'},
-                'FONT':{'type':'font','default':options['FONT'],'label':'Font'},
+                'ALIGNMENT':{'type':'combobox','default':'w','items':['left','right','center'],'label':'文本对齐'},
+                'BGCOLOR':{'type':'colorbutton','default':options['BGCOLOR'],'label':'背景颜色'},
+                'FONT':{'type':'font','default':options['FONT'],'label':'字体'},
                 'FONTSIZE':{'type':'spinbox','default':options['FONTSIZE'],'range':(5,40),
-                            'interval':1,'label':'Font Size'},
+                        'interval':1,'label':'字体大小'},
                 'TIMEFORMAT':{'type':'combobox','default':options['TIMEFORMAT'],
-                            'items':timeformats,'label':'Date/Time format'},
+                        'items':timeformats,'label':'日期/时间格式'},
                 'PRECISION':{'type':'spinbox','default':options['PRECISION'], 'range':(0,10),
-                            'interval':1,'label':'Precision'},
-                'SHOWPLOTTER': {'type':'checkbox','default':bool(options['SHOWPLOTTER']), 'label':'Show Plotter'},
+                        'interval':1,'label':'精度'},
+                'SHOWPLOTTER': {'type':'checkbox','default':bool(options['SHOWPLOTTER']), 'label':'显示绘图'},
                 'PLOTSTYLE':{'type':'combobox','default':options['PLOTSTYLE'],
-                            'items':plotstyles,'label':'Plot Style'},
+                        'items':plotstyles,'label':'绘图样式'},
                 'DPI':{'type':'entry','default':options['DPI'],#'range':(20,300),'interval':10,
-                        'label':'Plot DPI'},
-                'ICONSIZE':{'type':'spinbox','default':options['ICONSIZE'],'range':(16,64), 'label':'Icon Size'},
+                    'label':'绘图 DPI'},
+                'ICONSIZE':{'type':'spinbox','default':options['ICONSIZE'],'range':(16,64), 'label':'图标大小'},
                 'THEME':{'type':'combobox','default':options['THEME'],'items': themes,
-                        'label': 'Default Theme'}
+                    'label': '默认主题'}
                 }
         sections = {'table':['ALIGNMENT','FONT','FONTSIZE',
                         'TIMEFORMAT','PRECISION','BGCOLOR'],
@@ -1409,13 +1409,13 @@ class PreferencesDialog(QDialog):
 
         bw = self.button_widget = QWidget(parent)
         vbox = QHBoxLayout(bw)
-        button = QPushButton("Apply")
+        button = QPushButton("应用")
         button.clicked.connect(self.apply)
         vbox.addWidget(button)
-        button = QPushButton("Reset")
+        button = QPushButton("重置")
         button.clicked.connect(self.reset)
         vbox.addWidget(button)
-        button = QPushButton("Close")
+        button = QPushButton("关闭")
         button.clicked.connect(self.close)
         vbox.addWidget(button)
         return bw
@@ -1480,18 +1480,18 @@ class FindReplaceDialog(QWidget):
         return
 
     def createWidgets(self):
-        """Create widgets"""
+        """创建小部件"""
 
         df = self.table.model.df
         cols = list(df.columns)
         self.layout = QVBoxLayout(self)
         self.setLayout(self.layout)
         self.query_w = QLineEdit()
-        self.layout.addWidget(QLabel('Query String'))
+        self.layout.addWidget(QLabel('查询内容'))
         self.layout.addWidget(self.query_w )
         self.query_w.returnPressed.connect(self.findAll)
         self.replace_w = QLineEdit()
-        self.layout.addWidget(QLabel('Replace With'))
+        self.layout.addWidget(QLabel('替换为'))
         self.layout.addWidget(self.replace_w )
 
         tb = self.createToolBar(self)
@@ -1501,18 +1501,18 @@ class FindReplaceDialog(QWidget):
 
     def createToolBar(self, parent):
 
-        items = {'Find All': {'action':self.findAll,'file':'findall'},
-                 'Find Next': {'action':self.findNext,'file':'find'},
-                 'Replace': {'action':self.replace,'file':'findreplace'},
-                 'Case Sensitive': {'action':self.togglecase,'file':'lowercase','checkable':True}
-                 }
-        toolbar = QToolBar("Toolbar")
+        items = {'查找全部': {'action':self.findAll,'file':'findall'},
+        '查找下一个': {'action':self.findNext,'file':'find'},
+             '替换': {'action':self.replace,'file':'findreplace'},
+             '区分大小写': {'action':self.togglecase,'file':'lowercase','checkable':True}
+             }
+        toolbar = QToolBar("工具栏")
         toolbar.setOrientation(QtCore.Qt.Horizontal)
         addToolBarItems(toolbar, self, items)
         return toolbar
 
     def findAll(self):
-        """Apply"""
+        """查找所有匹配项"""
 
         self.find()
         self.table.refresh()
@@ -1619,34 +1619,34 @@ class FilterDialog(QWidget):
 
     def createToolBar(self, parent):
 
-        items = {'Apply': {'action':self.apply,'file':'filter'},
-                 'Add': {'action':self.addFilter,'file':'add'},
-                 'Reset': {'action':self.refresh,'file':'table-refresh'},
-                 'Copy to New Table': {'action':self.copyResult,'file':'subtable'},
-                 'Subtract': {'action':self.removeFiltered,'file':'table-remove'},
-                 'Ignore Case': {'action':self.togglecase,'file':'lowercase','checkable':True}
-                 }
-        toolbar = QToolBar("Toolbar")
+        items = {'应用': {'action':self.apply,'file':'filter'},
+             '添加': {'action':self.addFilter,'file':'add'},
+             '重置': {'action':self.refresh,'file':'table-refresh'},
+             '复制到新表': {'action':self.copyResult,'file':'subtable'},
+             '减去': {'action':self.removeFiltered,'file':'table-remove'},
+             '忽略大小写': {'action':self.togglecase,'file':'lowercase','checkable':True}
+             }
+        toolbar = QToolBar("工具栏")
         toolbar.setOrientation(QtCore.Qt.Horizontal)
         addToolBarItems(toolbar, self, items)
         return toolbar
 
     def createWidgets(self):
-        """Create widgets"""
+        """创建小部件"""
 
         df = self.table.model.df
         cols = list(df.columns)
         self.layout = QVBoxLayout(self)
         self.setLayout(self.layout)
         self.query_w = QLineEdit()
-        self.layout.addWidget(QLabel('String filter'))
+        self.layout.addWidget(QLabel('字符串过滤'))
         self.layout.addWidget(self.query_w )
         self.query_w.returnPressed.connect(self.apply)
         w = self.column_w = QListWidget()
         w.setSelectionMode(QAbstractItemView.MultiSelection)
         #w.setFixedHeight(60)
         w.addItems(cols)
-        self.layout.addWidget(QLabel('Display Columns'))
+        self.layout.addWidget(QLabel('显示列'))
         self.layout.addWidget(self.column_w)
         tb = self.createToolBar(self)
         self.layout.addWidget(tb)
@@ -1789,9 +1789,9 @@ class FilterDialog(QWidget):
     def removeFiltered(self):
         """Subtract current filtered result from original table"""
 
-        reply = QMessageBox.question(self, 'Perform Action?',
-                             'This will overwrite the current table. Are you sure?',
-                              QMessageBox.Yes, QMessageBox.No)
+        reply = QMessageBox.question(self, '执行操作？',
+                     '该操作将覆盖当前表格，确定要继续吗？',
+                      QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.No:
             return
         table = self.table
@@ -1821,7 +1821,7 @@ class FilterBar(QWidget):
         self.createWidgets()
 
     def createWidgets(self):
-        """Create widgets"""
+        """创建小部件"""
 
         operators = ['contains','excludes','equals','not equals','>','<','is empty','not empty',
                      'starts with','ends with','has length','is number','is lowercase','is uppercase']

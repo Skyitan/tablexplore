@@ -2,29 +2,17 @@
 # -*- coding: utf-8 -*-
 
 """
-    TablExplore plugin class
-    Created January 2021
-    Copyright (C) Damien Farrell
+    插件基类与插件系统工具
+    创建于 2021 年 1 月
 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    提供插件基类 `Plugin` 以及帮助发现、加载和管理插件的工具函数。
 """
 
 from __future__ import absolute_import, division, print_function
 import inspect
 import sys,os,platform,time,traceback
 import pickle, gzip
+import shutil
 from collections import OrderedDict
 from .qt import *
 import pandas as pd
@@ -37,7 +25,7 @@ stylepath = os.path.join(module_path, 'styles')
 iconpath = os.path.join(module_path, 'icons')
 
 class Plugin(object):
-    """Base Plugin class, should be inherited by any plugin"""
+    """插件基类：其它插件应继承此类并实现 `createWidgets` 等方法。"""
 
     #capabilities can be 'gui', 'docked'
     capabilities = []
@@ -57,25 +45,24 @@ class Plugin(object):
         return
 
     def createWidgets(self, width=600, height=600):
-        """Create main widget with GUI elements.
-           This will be specific to the plugin so it must be overrriden."""
+        """创建插件主界面控件（子类必须重写）。"""
 
         return
 
     def _getmethods(self):
-        """Get a list of all available public methods"""
+        """返回插件中可用的公有方法列表。"""
 
         mems = inspect.getmembers(self, inspect.ismethod)
         methods = [m for m in mems if not m[0].startswith('_')]
         return methods
 
     def _update(self):
-        """Called when table is changed"""
+        """当关联表格发生变化时调用（可重写）。"""
 
         return
 
     def _aboutWindow(self):
-        """Display an about dialog"""
+        """显示关于对话框（可重写）。"""
 
         return
 
@@ -207,18 +194,18 @@ def describe_func(obj, method=False):
 
    if args:
        if args[0] == 'self':
-           wi('\t%s is an instance method' % obj.__name__)
+           print('\t%s is an instance method' % obj.__name__)
            args.pop(0)
 
-       wi('\t-Method Arguments:', args)
+       print('\t-Method Arguments:', args)
 
        if arginfo[3]:
            dl = len(arginfo[3])
            al = len(args)
            defargs = args[al-dl:al]
-           wi('\t--Default arguments:',zip(defargs, arginfo[3]))
+           print('\t--Default arguments:',zip(defargs, arginfo[3]))
 
    if arginfo[1]:
-       wi('\t-Positional Args Param: %s' % arginfo[1])
+       print('\t-Positional Args Param: %s' % arginfo[1])
    if arginfo[2]:
-       wi('\t-Keyword Args Param: %s' % arginfo[2])
+       print('\t-Keyword Args Param: %s' % arginfo[2])

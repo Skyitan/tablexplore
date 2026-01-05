@@ -1,21 +1,9 @@
 """
+    Seaborn 绘图插件（TableExplore）
+    创建于 2022 年 5 月
+    版权所有 (C) Damien Farrell
 
-    Created May 2022
-    Copyright (C) Damien Farrell
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    本模块提供基于 seaborn 的绘图插件，用于在 TableExplore 中绘制分类/连续图形。
 """
 
 from __future__ import absolute_import, division, print_function
@@ -62,17 +50,17 @@ widgetstyle = '''
 '''
 
 class SeabornPlugin(Plugin):
-    """Template plugin for TableExplore"""
+    """TableExplore 的 Seaborn 插件模板"""
 
     #uncomment capabilities list to appear in menu
     capabilities = ['gui']
     requires = ['']
     menuentry = 'Seaborn'
     iconfile = 'seaborn.png'
-    name = 'Seaborn Plugin'
+    name = 'Seaborn 插件'
 
     def __init__(self, parent=None, table=None):
-        """Customise this and/or doFrame for your widgets"""
+        """为你的控件定制初始化逻辑或创建布局"""
 
         if parent==None:
             return
@@ -83,12 +71,12 @@ class SeabornPlugin(Plugin):
         return
 
     def _createMenuBar(self):
-        """Create the menu bar for the application. """
+        """为应用创建菜单栏。"""
 
         return
 
     def createWidgets(self):
-        """Create widgets if GUI plugin"""
+        """如果为 GUI 插件，则创建界面控件"""
 
         df = self.table.table.model.df
         datacols = ['']+list(df.columns)
@@ -126,21 +114,21 @@ class SeabornPlugin(Plugin):
         return
 
     def createButtons(self, parent):
-        """Create buttons"""
+        """创建按钮"""
 
         bw = QWidget(parent)
         bw.setMaximumWidth(200)
         vbox = QVBoxLayout(bw)
-        button = QPushButton("Plot")
+        button = QPushButton("绘制")
         button.clicked.connect(self.replot)
         vbox.addWidget(button)
-        button = QPushButton("Help")
+        button = QPushButton("帮助")
         button.clicked.connect(self.help)
         vbox.addWidget(button)
         return bw
 
     def replot(self, event=None):
-        """Update the plot"""
+        """更新绘图"""
 
         df = self.table.getSelectedDataFrame()
         pf = self.table.pf
@@ -178,7 +166,7 @@ class SeabornPlugin(Plugin):
         return
 
     def _update(self):
-        """Update data widget(s)"""
+        """更新数据控件"""
 
         df = self.table.table.model.df
         datacols = ['']+list(df.columns)

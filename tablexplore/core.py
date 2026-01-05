@@ -133,7 +133,7 @@ class ItemEditorFactory(QItemEditorFactory):
             return super().createEditor(userType, parent)
 
 class DataFrameWidget(QWidget):
-    """Widget containing a tableview and toolbars"""
+    """包含表格视图和工具栏的控件"""
     def __init__(self, parent=None, dataframe=None, app=None,
                  toolbar=True, statusbar=True, **kwargs):
 
@@ -162,13 +162,13 @@ class DataFrameWidget(QWidget):
 
     #@Slot('QModelIndex','QModelIndex','int')
     def stateChanged(self, idx, idx2):
-        """Run whenever table model is changed"""
+        """在表格模型更改时运行"""
 
         if hasattr(self, 'pf') and self.pf is not None:
             self.pf.updateData()
 
     def statusBar(self):
-        """Status bar at bottom"""
+        """底部状态栏"""
 
         w = self.statusbar = QWidget(self)
         l = QHBoxLayout(w)
@@ -181,7 +181,7 @@ class DataFrameWidget(QWidget):
         return
 
     def createToolbar(self):
-        """Create toolbar"""
+        """创建工具栏"""
 
         self.setLayout(self.layout)
         items = {'load': {'action': self.load,'file':'open'},
@@ -201,7 +201,7 @@ class DataFrameWidget(QWidget):
                  'clear': {'action':self.clear,'file':'clear'},
                  }
 
-        self.toolbar = toolbar = QToolBar("Toolbar")
+        self.toolbar = toolbar = QToolBar("工具栏")
         toolbar.setIconSize(QtCore.QSize(ICONSIZE, ICONSIZE))
         toolbar.setOrientation(QtCore.Qt.Vertical)
         dialogs.addToolBarItems(toolbar, self, items)
@@ -209,13 +209,13 @@ class DataFrameWidget(QWidget):
         return
 
     def applySettings(self, settings):
-        """Settings"""
+        """应用设置"""
 
         #self.table.setFont(font)
         return
 
     def close(self):
-        """Close events"""
+        """关闭事件"""
 
         if self.pyconsole != None:
             self.pyconsole.closeEvent()
@@ -227,7 +227,7 @@ class DataFrameWidget(QWidget):
         return
 
     def updateStatusBar(self):
-        """Update the table details in the status bar"""
+        """在状态栏中更新表格信息"""
 
         if not hasattr(self, 'size_label'):
             return
@@ -248,11 +248,11 @@ class DataFrameWidget(QWidget):
         return ftype
 
     def importFile(self, filename=None, dialog=True, **kwargs):
-        """Import csv file"""
+        """导入 CSV 文件"""
 
         if filename == None:
             options = QFileDialog.Options()
-            filename, _ = QFileDialog.getOpenFileName(self,"Import File",
+            filename, _ = QFileDialog.getOpenFileName(self,"导入文件",
                                  "","CSV files (*.csv);;Text Files (*.txt);;All Files (*)",
                                  options=options)
             if not filename:
@@ -273,20 +273,20 @@ class DataFrameWidget(QWidget):
     def importPickle(self):
 
         options = QFileDialog.Options()
-        filename, _ = QFileDialog.getOpenFileName(self,"Import Pickle",
-                             "","pickle files (*.pkl *.pickle);;All Files (*)",
-                             options=options)
+        filename, _ = QFileDialog.getOpenFileName(self,"导入 Pickle",
+                     "","pickle files (*.pkl *.pickle);;All Files (*)",
+                     options=options)
         if filename:
             self.table.model.df = pd.read_pickle(filename)
             self.refresh()
         return
 
     def importExcel(self, filename=None):
-        """Import excel file"""
+        """导入 Excel 文件"""
 
         if filename == None:
             options = QFileDialog.Options()
-            filename, _ = QFileDialog.getOpenFileName(self,"Import Excel",
+            filename, _ = QFileDialog.getOpenFileName(self,"导入 Excel",
                              "","xlsx files (*.xlsx);;xls Files (*.xls);;All Files (*)",
                              options=options)
         if filename:
@@ -295,27 +295,27 @@ class DataFrameWidget(QWidget):
         return
 
     def importHDF(self):
-        """Import hdf5 file"""
+        """导入 hdf5 文件"""
 
         options = QFileDialog.Options()
-        filename, _ = QFileDialog.getOpenFileName(self,"Import Excel",
-                             "","hdf files (*.hdf5);;All Files (*)",
-                             options=options)
+        filename, _ = QFileDialog.getOpenFileName(self,"导入文件",
+                     "","hdf files (*.hdf5);;All Files (*)",
+                     options=options)
         if filename:
             self.table.model.df = pd.read_hdf(filename, **kwargs)
             self.refresh()
         return
 
     def importURL(self, recent):
-        """Import hdf5 file"""
+        """从 URL 导入数据"""
 
         delimiters = [',',r'\t',' ',';','/','&','|','^','+','-']
-        opts = {'url':{'label':'Address','type':'combobox','default':'',
+        opts = {'url':{'label':'地址','type':'combobox','default':'',
                      'items':recent, 'editable': True, 'width':600 },
-                'sep':{'label':'Delimeter','type':'combobox','default':'',
+                'sep':{'label':'分隔符','type':'combobox','default':'',
                     'items':delimiters,'width':200}
                 }
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Import URL', width=600)
+        dlg = dialogs.MultipleInputDialog(self, opts, title='导入 URL', width=600)
         dlg.exec_()
         if not dlg.accepted:
             return False
@@ -326,11 +326,11 @@ class DataFrameWidget(QWidget):
         return url
 
     def exportTable(self):
-        """Export table"""
+        """导出表格"""
 
         options = QFileDialog.Options()
         #options.setDefaultSuffix('csv')
-        filename, _ = QFileDialog.getSaveFileName(self,"Export",
+        filename, _ = QFileDialog.getSaveFileName(self,"导出",
                              "","csv files (*.csv);;xlsx files (*.xlsx);;xls Files (*.xls);;All Files (*)",
                              options=options)
         if not filename:
@@ -340,13 +340,13 @@ class DataFrameWidget(QWidget):
         return
 
     def copy(self):
-        """Copy to clipboard"""
+        """复制到剪贴板"""
 
         #check size of dataframe
         m = self.table.model.df.memory_usage(deep=True).sum()
         if m>1e8:
-            answer = QMessageBox.question(self, 'Copy?',
-                             'This data may be too large to copy. Are you sure?', QMessageBox.Yes, QMessageBox.No)
+            answer = QMessageBox.question(self, '复制？',
+                             '数据可能过大，是否继续复制？', QMessageBox.Yes, QMessageBox.No)
             if not answer:
                 return
         df = self.table.getSelectedDataFrame()
@@ -354,7 +354,7 @@ class DataFrameWidget(QWidget):
         return
 
     def paste(self):
-        """Paste from clipboard"""
+        """从剪贴板粘贴"""
 
         self.table.storeCurrent()
         self.table.model.df = pd.read_clipboard(sep='\t', index_col=0)
@@ -363,7 +363,7 @@ class DataFrameWidget(QWidget):
         return
 
     def insert(self):
-        """Insert from clipboard"""
+        """从剪贴板插入"""
 
         self.table.storeCurrent()
         df = self.table.model.df
@@ -379,7 +379,7 @@ class DataFrameWidget(QWidget):
         self.table.addRows()
 
     def plot(self):
-        """Plot from selection"""
+        """根据选中项绘图"""
 
         if self.pf == None:
             self.createPlotViewer()
@@ -389,7 +389,7 @@ class DataFrameWidget(QWidget):
         return
 
     def createPlotViewer(self, parent=None):
-        """Create a plot widget attached to this table"""
+        """为此表创建绘图窗口"""
 
         if self.pf == None:
             self.pf = plotting.PlotViewer(table=self.table, parent=parent)
@@ -399,7 +399,7 @@ class DataFrameWidget(QWidget):
         return self.pf
 
     def info(self):
-        """Table info"""
+        """表信息"""
 
         buf = io.StringIO()
         self.table.model.df.info(verbose=True,buf=buf,memory_usage=True)
@@ -407,7 +407,7 @@ class DataFrameWidget(QWidget):
         return
 
     def showAsText(self):
-        """Show selection as text"""
+        """以文本显示选择内容"""
 
         df = self.getSelectedDataFrame()
         dlg = dialogs.TextDialog(self, df.to_string(), width=800, height=400)
@@ -415,7 +415,7 @@ class DataFrameWidget(QWidget):
         return
 
     def clear(self):
-        """Clear table"""
+        """清空表格"""
 
         self.table.storeCurrent()
         self.table.model.df = pd.DataFrame()
@@ -423,7 +423,7 @@ class DataFrameWidget(QWidget):
         return
 
     def findDuplicates(self):
-        """Find or remove duplicates"""
+        """查找或删除重复项"""
 
         df = self.table.model.df
         cols = df.columns
@@ -435,7 +435,7 @@ class DataFrameWidget(QWidget):
                              'items':['first','last'], 'tooltip':'values to keep'},
                 'inplace':{'type':'checkbox','default':0,'label':'In place' },
                 }
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Clean Data')
+        dlg = dialogs.MultipleInputDialog(self, opts, title='清理数据')
         dlg.exec_()
         if not dlg.accepted:
             return
@@ -462,7 +462,7 @@ class DataFrameWidget(QWidget):
         return
 
     def manageColumns(self):
-        """Edit columns"""
+        """编辑列"""
 
         df = self.table.model.df
         cols = df.columns
@@ -472,34 +472,34 @@ class DataFrameWidget(QWidget):
             return
 
     def cleanData(self):
-        """Deal with missing data"""
+        """处理缺失数据"""
 
         df = self.table.model.df
         cols = df.columns
         fillopts = ['fill scalar','','ffill','bfill','interpolate']
-        opts = {'replace':{'label':'Replace','type':'entry','default':'',
-                             'tooltip':'replace with'},
-                'symbol':{'label':'Fill empty/replace with','type':'combobox','default':'',
-                             'items':['',0,'null','-','x'], 'editable': True, 'tooltip':'seperator'},
-                'method':{'label':'Fill missing method','type':'combobox','default':'',
-                                     'items':fillopts, 'tooltip':''},
-                'limit':  {'type':'checkbox','default':1,'label':'Limit gaps',
-                                'tooltip':' '},
-                'dropcols':  {'type':'checkbox','default':0,'label':'Drop columns with null data',
-                                'tooltip':' '},
-                'droprows':  {'type':'checkbox','default':0,'label':'Drop rows with null data',
-                                'tooltip':' '},
-                'how':{'label':'Drop method','type':'combobox','default':'',
-                             'items':['any','all'], 'tooltip':''},
-                'dropduplicatecols':  {'type':'checkbox','default':0,'label':'Drop duplicate columns',
-                                'tooltip':' '},
-                'dropduplicaterows':  {'type':'checkbox','default':0,'label':'Drop duplicate rows',
-                                'tooltip':' '},
-                'rounddecimals':  {'type':'spinbox','default':0,'label':'Round Numbers',
-                                'tooltip':' '},
-                }
+        opts = {'replace':{'label':'替换','type':'entry','default':'',
+                     'tooltip':'替换为'},
+            'symbol':{'label':'填充值/替换为','type':'combobox','default':'',
+                     'items':['',0,'null','-','x'], 'editable': True, 'tooltip':'seperator'},
+            'method':{'label':'缺失值填充方法','type':'combobox','default':'',
+                         'items':fillopts, 'tooltip':''},
+            'limit':  {'type':'checkbox','default':1,'label':'限制空缺',
+                    'tooltip':' '},
+            'dropcols':  {'type':'checkbox','default':0,'label':'删除含空值列',
+                    'tooltip':' '},
+            'droprows':  {'type':'checkbox','default':0,'label':'删除含空值行',
+                    'tooltip':' '},
+            'how':{'label':'删除方法','type':'combobox','default':'',
+                     'items':['any','all'], 'tooltip':''},
+            'dropduplicatecols':  {'type':'checkbox','default':0,'label':'删除重复列',
+                    'tooltip':' '},
+            'dropduplicaterows':  {'type':'checkbox','default':0,'label':'删除重复行',
+                    'tooltip':' '},
+            'rounddecimals':  {'type':'spinbox','default':0,'label':'数值四舍五入',
+                    'tooltip':' '},
+            }
 
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Clean Data')
+        dlg = dialogs.MultipleInputDialog(self, opts, title='清理数据')
         dlg.exec_()
         if not dlg.accepted:
             return
@@ -544,7 +544,7 @@ class DataFrameWidget(QWidget):
         return
 
     def convertNumeric(self):
-        """Convert cols to numeric if possible"""
+        """尽可能将列转换为数值类型"""
 
         df = self.table.model.df
         idx = self.table.getSelectedColumns()
@@ -561,7 +561,7 @@ class DataFrameWidget(QWidget):
                 'fillempty':  {'type':'checkbox','default':0,'label':'Fill Empty',
                                                         'tooltip':' '},
                }
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Convert Numeric')
+        dlg = dialogs.MultipleInputDialog(self, opts, title='转换为数值')
         dlg.exec_()
         if not dlg.accepted:
             return
@@ -602,18 +602,18 @@ class DataFrameWidget(QWidget):
         return
 
     def convertColumnNames(self):
-        """Reformat column names"""
+        """重新格式化列名"""
 
         df = self.table.model.df
-        opts = {'replace':  {'type':'entry','default':'','label':'Replace'},
-                'with':  {'type':'entry','default':'','label':'With'},
-                'prefix':  {'type':'entry','default':'','label':'Prefix'},
-                'truncate':  {'type':'spinbox','default':0,'label':'Truncate',range:(0,100)},
-                'convertcase':  {'type':'combobox','default':'','items':['','upper','lower','title'],
-                'label':'Convert Case'}
-               }
+        opts = {'replace':  {'type':'entry','default':'','label':'替换'},
+            'with':  {'type':'entry','default':'','label':'替换为'},
+            'prefix':  {'type':'entry','default':'','label':'前缀'},
+            'truncate':  {'type':'spinbox','default':0,'label':'截断',range:(0,100)},
+            'convertcase':  {'type':'combobox','default':'','items':['','upper','lower','title'],
+            'label':'转换大小写'
+            }}
 
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Format Column Names', width=300)
+        dlg = dialogs.MultipleInputDialog(self, opts, title='格式化列名', width=300)
         dlg.exec_()
         if not dlg.accepted:
             return
@@ -644,8 +644,7 @@ class DataFrameWidget(QWidget):
         return
 
     def applyColumnFunction(self, column):
-        """Apply column wise functions, applies a calculation per row and
-        ceates a new column."""
+        """对列应用函数：对每行执行计算并创建新列。"""
 
         df = self.table.model.df
         tablecols = ['']+list(df.columns)
@@ -675,7 +674,7 @@ class DataFrameWidget(QWidget):
                 'suffix':  {'type':'entry','default':'_x','items':funcs,'label':'Suffix'},
                 'group': {'type':'combobox','default':'','items':tablecols,'label':'Apply per Group'},
                }
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Apply Function', width=300)
+        dlg = dialogs.MultipleInputDialog(self, opts, title='应用函数', width=300)
         dlg.exec_()
         if not dlg.accepted:
             return
@@ -736,7 +735,7 @@ class DataFrameWidget(QWidget):
         return
 
     def _getFunction(self, funcname, obj=None):
-        """Get a function as attribute of a class by name"""
+        """按名称从类或模块获取函数"""
 
         if obj != None:
             func = getattr(obj, funcname)
@@ -750,7 +749,7 @@ class DataFrameWidget(QWidget):
         return func
 
     def applyTransformFunction(self, column):
-        """Apply resampling and transform functions on a single column."""
+        """对单列应用重采样和转换函数。"""
 
         df = self.table.model.df
         col = column
@@ -774,7 +773,7 @@ class DataFrameWidget(QWidget):
                 'suffix':  {'type':'entry','default':'_x','label':'Suffix'}
                }
 
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Transform/Resample', width=300)
+        dlg = dialogs.MultipleInputDialog(self, opts, title='转换/重采样', width=300)
         dlg.exec_()
         if not dlg.accepted:
             return
@@ -813,14 +812,14 @@ class DataFrameWidget(QWidget):
                 df[col] = result
             else:
                 if newcol in df.columns:
-                    newcol = dialogs.getName(self, txt="Enter Column Name")
+                    newcol = dialogs.getName(self, txt="输入列名")
                 idx = df.columns.get_loc(col)
                 df.insert(idx+1, newcol, result)
         self.refresh()
         return
 
     def fillDates(self, column):
-        """Fill with datetime"""
+        """填充日期时间"""
 
         df = self.table.model.df
         st='01/01/2022'
@@ -831,7 +830,7 @@ class DataFrameWidget(QWidget):
                 'end':  {'type':'entry','default':en,'label':'End','tooltip':'end value if filling with range'},
                 'freq': {'type':'combobox','default':'auto','items':freqs,'label':'Freq'}
                 }
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Fill Dates', width=300)
+        dlg = dialogs.MultipleInputDialog(self, opts, title='填充日期', width=300)
         dlg.exec_()
         if not dlg.accepted:
             return
@@ -852,14 +851,14 @@ class DataFrameWidget(QWidget):
         return
 
     def fillStrings(self, column):
-        """Fill column with string data"""
+        """用字符串填充列"""
 
         df = self.table.model.df
         chartypes = ['lower','upper','printable']
         opts = {'length': {'type':'spinbox','default':5,'label':'Length'},
                 'chartype':{'type':'combobox','items':chartypes,'default':'lower','label':'Word type'},
             }
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Fill String', width=300)
+        dlg = dialogs.MultipleInputDialog(self, opts, title='填充字符串', width=300)
         dlg.exec_()
         if not dlg.accepted:
             return
@@ -877,7 +876,7 @@ class DataFrameWidget(QWidget):
         self.refresh()
 
     def fillData(self, column):
-        """Fill column with data"""
+        """用数据填充列"""
 
         dists = ['normal','gamma','uniform','random int','logistic']
         df = self.table.model.df
@@ -892,7 +891,7 @@ class DataFrameWidget(QWidget):
                 'std':  {'type':'entry','default':1,'label':'St. Dev'},
         }
 
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Fill', width=300)
+        dlg = dialogs.MultipleInputDialog(self, opts, title='填充', width=300)
         dlg.exec_()
         if not dlg.accepted:
             return
@@ -935,9 +934,7 @@ class DataFrameWidget(QWidget):
         return
 
     def convertDates(self, column):
-        """Convert single or multiple columns into datetime or extract features from
-        datetime object.
-        """
+        """将单列或多列转换为日期时间或从日期时间对象中提取特征。"""
 
         df = self.table.model.df
         props = ['day','dayofweek','month','hour','minute','second','microsecond','year',
@@ -948,7 +945,7 @@ class DataFrameWidget(QWidget):
                 'prop':  {'type':'list','default':'int',
                         'items':props,'label':'Extract from datetime'} }
 
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Convert/Extract Dates')
+        dlg = dialogs.MultipleInputDialog(self, opts, title='转换/提取日期')
         dlg.exec_()
         if not dlg.accepted:
             return
@@ -984,7 +981,7 @@ class DataFrameWidget(QWidget):
         return
 
     def applyStringMethod(self, column):
-        """Apply string operation to column(s)"""
+        """对列应用字符串操作"""
 
         df = self.table.model.df
         idx = self.table.getSelectedColumns()
@@ -993,16 +990,16 @@ class DataFrameWidget(QWidget):
         funcs = ['','split','strip','lstrip','lower','upper','title','swapcase','len',
                  'slice','replace','concat']
         opts = {'function':  {'type':'combobox','default':'',
-                            'items':funcs,'label':'Function'},
-                'sep':  {'type':'entry','default':',', 'label':'Split separator'},
-                'concat_sep':  {'type':'entry','default':'', 'label':'Concat separator'},
-                'start':  {'type':'entry','default':0, 'label':'Slice start'},
-                'end':  {'type':'entry','default':1, 'label':'Slice end'},
-                'pat':  {'type':'entry','default':'', 'label':'Pattern'},
-                'repl': {'type':'entry','default':'', 'label':'Replace with'},
-                'inplace': {'type':'checkbox','default':False, 'label':'In place'},
-               }
-        dlg = dialogs.MultipleInputDialog(self, opts, title='String Operation', width=300)
+                    'items':funcs,'label':'函数'},
+              'sep':  {'type':'entry','default':',', 'label':'分隔符'},
+              'concat_sep':  {'type':'entry','default':'', 'label':'连接分隔符'},
+              'start':  {'type':'entry','default':0, 'label':'起始'},
+              'end':  {'type':'entry','default':1, 'label':'结束'},
+              'pat':  {'type':'entry','default':'', 'label':'模式'},
+              'repl': {'type':'entry','default':'', 'label':'替换为'},
+              'inplace': {'type':'checkbox','default':False, 'label':'就地修改'},
+             }
+        dlg = dialogs.MultipleInputDialog(self, opts, title='字符串操作', width=300)
         dlg.exec_()
         if not dlg.accepted:
             return
@@ -1062,7 +1059,7 @@ class DataFrameWidget(QWidget):
         return
 
     def resample(self):
-        """Table time series resampling dialog. Should set a datetime index first."""
+        """时间序列重采样对话框。应先设置日期时间索引。"""
 
         df = self.table.model.df
         if not isinstance(df.index, pd.DatetimeIndex):
@@ -1081,7 +1078,7 @@ class DataFrameWidget(QWidget):
                 'func':  {'type':'combobox','default':'mean',
                         'items':funcs,'label':'Function'} }
 
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Resample', width=300)
+        dlg = dialogs.MultipleInputDialog(self, opts, title='重采样', width=300)
         dlg.exec_()
         if not dlg.accepted:
             return
@@ -1105,7 +1102,7 @@ class DataFrameWidget(QWidget):
         return
 
     '''def runLastAction(self):
-        """Run previous action again"""
+        """再次运行上一个操作"""
 
         func = getattr(self, self.action['name'])
         print (func)
@@ -1113,7 +1110,7 @@ class DataFrameWidget(QWidget):
         return
 
     def storeAction(self, name):
-        """Save last run action"""
+        """保存上次运行的操作"""
 
         self.action = {'name':name}
         return'''
@@ -1125,7 +1122,7 @@ class DataFrameWidget(QWidget):
         return
 
     def pivot(self):
-        """Pivot table"""
+        """透视表"""
 
         dlg = dialogs.PivotDialog(self, self.table.model.df)
         dlg.exec_()
@@ -1134,7 +1131,7 @@ class DataFrameWidget(QWidget):
         return
 
     def aggregate(self):
-        """Groupby aggregate operation"""
+        """分组汇总操作"""
 
         dlg = dialogs.AggregateDialog(self, self.table.model.df)
         dlg.exec_()
@@ -1142,7 +1139,7 @@ class DataFrameWidget(QWidget):
             return
 
     def melt(self):
-        """Melt table"""
+        """表格展开 (melt)"""
 
         dlg = dialogs.MeltDialog(self, self.table.model.df)
         dlg.exec_()
@@ -1151,14 +1148,14 @@ class DataFrameWidget(QWidget):
         return
 
     def bin(self):
-        """Split into bins using cut"""
+        """使用 cut 分箱"""
 
         df = self.table.model.df
         new = pd.cut(df, bins, labels)
         return
 
     def filter(self):
-        """Show filter dialog"""
+        """显示过滤对话框"""
 
         if self.filterdock == None:
             dock = self.filterdock = dock = SubWidget(self.splitter, self.table)
@@ -1175,7 +1172,7 @@ class DataFrameWidget(QWidget):
         return
 
     def findreplace(self):
-        """Find/replace dialog"""
+        """查找/替换对话框"""
 
         if self.finddock == None:
             dock = self.finddock = dock = SubWidget(self.splitter, self.table)
@@ -1193,13 +1190,13 @@ class DataFrameWidget(QWidget):
         return
 
     def selectAll(self):
-        """Select all data"""
+        """选择所有数据"""
 
         self.table.selectAll()
         return
 
     def getSelectedDataFrame(self):
-        """Get selection as a dataframe"""
+        """将选择内容作为 DataFrame 获取"""
 
         return self.table.getSelectedDataFrame()
 
@@ -1210,7 +1207,7 @@ class DataFrameWidget(QWidget):
         return
 
     def showSubTable(self, df=None, title=None, index=False, out=False):
-        """Add the child table"""
+        """添加子表"""
 
         self.closeSubtable()
         if self.subtabledock == None:
@@ -1241,7 +1238,7 @@ class DataFrameWidget(QWidget):
         return
 
     def editMode(self, evt=None):
-        """Change table edit mode"""
+        """更改表格编辑模式"""
 
         index = self.sender().data()
         mode = MODES[index]
@@ -1255,14 +1252,14 @@ class DataFrameWidget(QWidget):
         return
 
     def runScript(self):
-        """Run a set of python commands on the table"""
+        """在表上运行一组 Python 命令"""
 
         script = ['df = df[:10]']
 
         return
 
     def showInterpreter(self):
-        """Show the Python interpreter"""
+        """显示 Python 解释器"""
 
         if self.pyconsole == None:
             from . import interpreter
@@ -1288,9 +1285,7 @@ class HeaderProxyStyle(QProxyStyle):
         )
 
 class HeaderView(QHeaderView):
-    """"
-    Column header class.
-    """
+    """列头视图类。"""
     def __init__(self, parent):
         super(HeaderView, self).__init__(QtCore.Qt.Horizontal, parent)
         '''self.setStyleSheet(
@@ -1312,7 +1307,7 @@ class HeaderView(QHeaderView):
         return
 
     def sectionSizeFromContents(self, logicalIndex):
-        """Get section size from contents"""
+        """从内容获取段大小"""
 
         text = self.model().headerData(logicalIndex, self.orientation(), QtCore.Qt.DisplayRole)
         alignment = self.defaultAlignment()
@@ -1329,9 +1324,7 @@ class HeaderView(QHeaderView):
         return QtCore.QSize(width, height)
 
 class DataFrameTable(QTableView):
-    """
-    QTableView with pandas DataFrame as model.
-    """
+    """基于 pandas DataFrame 的 QTableView。"""
     def __init__(self, parent=None, dataframe=None, font='Arial',
                     fontsize=12, columnwidth=80, timeformat='%m-%d-%Y',
                     bg='#F4F4F3', **kwargs):
@@ -1411,7 +1404,7 @@ class DataFrameTable(QTableView):
         return
 
     def updateFont(self):
-        """Update the font"""
+        """更新字体"""
 
         font = QFont(self.font)
         font.setPointSize(int(self.fontsize))
@@ -1421,7 +1414,7 @@ class DataFrameTable(QTableView):
         return
 
     def refresh(self):
-        """Refresh table if dataframe is changed"""
+        """当 DataFrame 更改时刷新表格"""
 
         self.updateFont()
         #self.horizontalHeader().setDefaultSectionSize(COLUMNWIDTH)
@@ -1437,7 +1430,7 @@ class DataFrameTable(QTableView):
         return
 
     def showAll(self):
-        """Re-show unfiltered"""
+        """重新显示未过滤内容"""
 
         if hasattr(self, 'dataframe') and self.dataframe is not None:
             self.model.df = self.dataframe
@@ -1446,7 +1439,7 @@ class DataFrameTable(QTableView):
         return
 
     def storeCurrent(self):
-        """Store current version of the table before a major change is made"""
+        """在重大更改前保存当前表的版本"""
 
         self.prevdf = self.model.df#.copy()
         self.prevdf.to_pickle(self.undo_file)
@@ -1454,7 +1447,7 @@ class DataFrameTable(QTableView):
         return
 
     def undo(self):
-        """Undo last change to table"""
+        """撤销对表的最后一次更改"""
 
         if os.path.exists(self.undo_file):
             print ('undo-ing')
@@ -1464,7 +1457,7 @@ class DataFrameTable(QTableView):
         return
 
     def getMemory(self):
-        """Get memory info as string"""
+        """以字符串形式获取内存信息"""
 
         m = self.model.df.memory_usage(deep=True).sum()
         if m>1e5:
@@ -1493,7 +1486,7 @@ class DataFrameTable(QTableView):
         return
 
     def getColumnOrder(self):
-        """Get column names from header in their displayed order"""
+        """按显示顺序从表头获取列名"""
 
         hh = self.horizontalHeader()
         df = self.model.df
@@ -1502,7 +1495,7 @@ class DataFrameTable(QTableView):
         return cols
 
     def checkColumnsUnique(self):
-        """Check if columns are all unique"""
+        """检查列名是否唯一"""
 
         df = self.model.df
         return len(df.columns) == len(set(df.columns))
@@ -1515,7 +1508,7 @@ class DataFrameTable(QTableView):
         return rows
 
     def getSelectedColumns(self):
-        """Get selected column indexes"""
+        """获取选中列的索引"""
 
         sm = self.selectionModel()
         cols = [(i.column()) for i in sm.selectedIndexes()]
@@ -1523,7 +1516,7 @@ class DataFrameTable(QTableView):
         return cols
 
     def getSelectedDataFrame(self):
-        """Get selection as a dataframe"""
+        """将选择内容作为 DataFrame 获取"""
 
         df = self.model.df
         sm = self.selectionModel()
@@ -1563,14 +1556,14 @@ class DataFrameTable(QTableView):
         return
 
     def getScrollPosition(self):
-        """Get current row/col position"""
+        """获取当前行/列位置"""
 
         hb = self.horizontalScrollBar()
         vb = self.verticalScrollBar()
         return vb.value(),hb.value()
 
     def setScrollPosition(self, row, col):
-        """Move to row/col position"""
+        """移动到指定行/列位置"""
 
         idx = self.model.index(row, col)
         self.scrollTo(idx)
@@ -1593,7 +1586,7 @@ class DataFrameTable(QTableView):
         print (self.model.df)
 
     def sort(self, idx, ascending=True):
-        """Sort by selected columns"""
+        """按选中列排序"""
 
         df = self.model.df
         sel = self.getSelectedColumns()
@@ -1605,11 +1598,11 @@ class DataFrameTable(QTableView):
         return
 
     def deleteCells(self, rows, cols, answer=None):
-        """Clear the cell contents"""
+        """清除单元格内容"""
 
         if answer == None:
-            answer = QMessageBox.question(self, 'Delete Cells?',
-                             'Are you sure?', QMessageBox.Yes, QMessageBox.No)
+            answer = QMessageBox.question(self, '删除单元格？',
+                             '确定要清除选中单元格的内容吗？', QMessageBox.Yes, QMessageBox.No)
         if not answer:
             return
         self.storeCurrent()
@@ -1622,17 +1615,17 @@ class DataFrameTable(QTableView):
             self.item(rowIndex, j).setBackground(color)
 
     def rowHeaderMenu(self, pos):
-        """Row header popup menu"""
+        """行头弹出菜单"""
 
         vheader = self.verticalHeader()
         idx = vheader.logicalIndexAt(pos)
         menu = QMenu(self)
 
-        resetIndexAction = menu.addAction("Reset Index")
-        sortIndexAction = menu.addAction("Sort By Index \u2193")
-        sortIndexDescAction = menu.addAction("Sort By Index \u2191")
-        setTypeAction = menu.addAction("Set Type")
-        deleteAction = menu.addAction("Delete Rows")
+        resetIndexAction = menu.addAction("重置索引")
+        sortIndexAction = menu.addAction("按索引降序 \u2193")
+        sortIndexDescAction = menu.addAction("按索引升序 \u2191")
+        setTypeAction = menu.addAction("设置类型")
+        deleteAction = menu.addAction("删除行")
         action = menu.exec_(self.mapToGlobal(pos))
         if action == resetIndexAction:
             self.resetIndex()
@@ -1647,7 +1640,7 @@ class DataFrameTable(QTableView):
         return
 
     def columnHeaderMenu(self, pos):
-        """Column header right click popup menu"""
+        """列头右键弹出菜单"""
 
         hheader = self.horizontalHeader()
         idx = hheader.logicalIndexAt(pos)
@@ -1655,30 +1648,30 @@ class DataFrameTable(QTableView):
         #model = self.model
         menu = QMenu(self)
 
-        sortAction = menu.addAction("Sort \u2193")
-        sortDescAction = menu.addAction("Sort \u2191")
+        sortAction = menu.addAction("升序排序 \u2193")
+        sortDescAction = menu.addAction("降序排序 \u2191")
         iconw = QIcon.fromTheme("open")
         sortAction.setIcon(iconw)
-        setIndexAction = menu.addAction("Set as Index")
+        setIndexAction = menu.addAction("设为索引")
 
-        colmenu = QMenu("Column",menu)
-        deleteColumnAction = colmenu.addAction("Delete Column")
-        renameColumnAction = colmenu.addAction("Rename Column")
-        addColumnAction = colmenu.addAction("Add Column")
-        setTypeAction = colmenu.addAction("Set Data Type")
-        convertNumericAction = colmenu.addAction("Convert to Numeric")
+        colmenu = QMenu("列",menu)
+        deleteColumnAction = colmenu.addAction("删除列")
+        renameColumnAction = colmenu.addAction("重命名列")
+        addColumnAction = colmenu.addAction("添加列")
+        setTypeAction = colmenu.addAction("设置数据类型")
+        convertNumericAction = colmenu.addAction("转换为数值")
         menu.addAction(colmenu.menuAction())
 
-        fillmenu = QMenu("Fill",menu)
-        filldataAction = fillmenu.addAction("Fill Data")
-        fillstringsAction = fillmenu.addAction("Fill Strings")
-        filldatesAction = fillmenu.addAction("Fill Dates")
+        fillmenu = QMenu("填充",menu)
+        filldataAction = fillmenu.addAction("填充数据")
+        fillstringsAction = fillmenu.addAction("填充字符串")
+        filldatesAction = fillmenu.addAction("填充日期")
         menu.addAction(fillmenu.menuAction())
 
-        applyFunctionAction = menu.addAction("Apply Function")
-        transformResampleAction = menu.addAction("Transform/Resample")
-        stringOpAction = menu.addAction("String Operation")
-        datetimeAction = menu.addAction("Date/Time Conversion")
+        applyFunctionAction = menu.addAction("应用函数")
+        transformResampleAction = menu.addAction("变换/重采样")
+        stringOpAction = menu.addAction("字符串操作")
+        datetimeAction = menu.addAction("日期/时间转换")
 
         #sortAction = menu.addAction("Sort By")
         action = menu.exec_(self.mapToGlobal(pos))
@@ -1722,33 +1715,33 @@ class DataFrameTable(QTableView):
             self.deleteCells(rows, cols)
 
     def contextMenuEvent(self, event):
-        """Reimplemented to create context menus for cells and empty space."""
+        """重新实现以为单元格和空白处创建上下文菜单。"""
 
-        # Determine the logical indices of the cell where click occured
+        # 确定点击发生的单元格的逻辑索引
         hheader, vheader = self.horizontalHeader(), self.verticalHeader()
         position = event.globalPos()
         row = vheader.logicalIndexAt(vheader.mapFromGlobal(position))
         column = hheader.logicalIndexAt(hheader.mapFromGlobal(position))
 
-        # Map the logical row index to a real index for the source model
+        # 将逻辑行索引映射为源模型的实际索引
         df = self.model.df
         if len(df) > 1:
             row = df.iloc[row]
         else:
             row = None
-        # Show a context menu for empty space at bottom of table...
+        # 在表格底部的空白处显示上下文菜单...
         menu = QMenu(self)
-        copyAction = menu.addAction("Copy")
-        importAction = menu.addAction("Import File")
-        exportAction = menu.addAction("Export Table")
-        plotAction = menu.addAction("Plot Selected")
-        viewAction = menu.addAction("View Row Data")
+        copyAction = menu.addAction("复制")
+        importAction = menu.addAction("导入文件")
+        exportAction = menu.addAction("导出表格")
+        plotAction = menu.addAction("绘制选中")
+        viewAction = menu.addAction("查看行数据")
 
-        rowsmenu = QMenu("Rows",menu)
+        rowsmenu = QMenu("行",menu)
         menu.addAction(rowsmenu.menuAction())
-        deleteRowsAction = rowsmenu.addAction("Delete Rows")
-        addRowsAction = rowsmenu.addAction("Add Rows")
-        modemenu = QMenu("Mode",menu)
+        deleteRowsAction = rowsmenu.addAction("删除行")
+        addRowsAction = rowsmenu.addAction("添加行")
+        modemenu = QMenu("模式",menu)
         menu.addAction(modemenu.menuAction())
         modegroup = QActionGroup(self)
         for i,mode in enumerate(MODES):
@@ -1761,7 +1754,7 @@ class DataFrameTable(QTableView):
                 action.triggered.connect(self.parent.editMode)
         modegroup.setExclusive(True)
 
-        memAction = menu.addAction("Memory Usage")
+        memAction = menu.addAction("内存使用")
         action = menu.exec_(self.mapToGlobal(event.pos()))
 
         if action == copyAction:
@@ -1788,7 +1781,7 @@ class DataFrameTable(QTableView):
         return
 
     def setIndex(self, column):
-        """Set column as index"""
+        """将列设为索引"""
 
         self.storeCurrent()
         self.model.df.set_index(column, inplace=True)
@@ -1796,18 +1789,18 @@ class DataFrameTable(QTableView):
         return
 
     def sortIndex(self, ascending=True):
-        """Sort by inde,"""
+        """按索引排序"""
 
         self.model.df = self.model.df.sort_index(axis=0,ascending=ascending)
         self.refresh()
         return
 
     def setIndexType(self):
-        """Set the type of the index"""
+        """设置索引类型"""
 
         types = ['float','int','object','datetime64[ns]']
-        newtype, ok = QInputDialog().getItem(self, "New Type",
-                                             "Type:", types, 0, False)
+        newtype, ok = QInputDialog().getItem(self, "新类型",
+                             "类型：", types, 0, False)
         if not ok:
             return
         self.storeCurrent()
@@ -1818,13 +1811,13 @@ class DataFrameTable(QTableView):
         return
 
     def addColumn(self):
-        """Add a  column"""
+        """添加列"""
 
-        opts = {'name':{'label':'Name','type':'entry','default':'' },
-                'fill':{'label':'Fill With','type':'entry','default':'' }
-                }
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Add Column',
-                                          width=400,height=150)
+        opts = {'name':{'label':'名称','type':'entry','default':'' },
+            'fill':{'label':'填充值','type':'entry','default':'' }
+            }
+        dlg = dialogs.MultipleInputDialog(self, opts, title='添加列',
+                          width=400,height=150)
         dlg.exec_()
         if not dlg.accepted:
             return False
@@ -1842,15 +1835,15 @@ class DataFrameTable(QTableView):
         return
 
     def deleteColumn(self, column=None):
-        """Delete column"""
+        """删除列"""
 
         idx = self.getSelectedColumns()
         if len(idx)>0:
             cols = self.model.df.columns[idx]
         else:
             cols = [column]
-        reply = QMessageBox.question(self, 'Delete Column(s)?',
-                             'Are you sure?', QMessageBox.Yes, QMessageBox.No)
+        reply = QMessageBox.question(self, '删除列？',
+                     '确定要删除选中的列吗？', QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.No:
             return False
 
@@ -1868,10 +1861,10 @@ class DataFrameTable(QTableView):
         return
 
     def addRows(self):
-        """Add n rows"""
+        """添加 n 行"""
 
-        num, ok = QInputDialog().getInt(self, "Rows to add",
-                                             "Rows:", QLineEdit.Normal)
+        num, ok = QInputDialog().getInt(self, "添加行数",
+                             "行数：", QLineEdit.Normal)
         if not ok:
             return
         df = self.model.df
@@ -1885,11 +1878,11 @@ class DataFrameTable(QTableView):
         return
 
     def deleteRows(self):
-        """Delete rows"""
+        """删除行"""
 
         rows = self.getSelectedRows()
-        reply = QMessageBox.question(self, 'Delete Rows?',
-                             'Are you sure?', QMessageBox.Yes, QMessageBox.No)
+        reply = QMessageBox.question(self, '删除行？',
+                     '确定要删除选中的行吗？', QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.No:
             return False
         idx = self.model.df.index[rows]
@@ -1898,29 +1891,29 @@ class DataFrameTable(QTableView):
         return
 
     def viewRow(self):
-        """View row data"""
+        """查看行数据"""
 
         pd.options.display.max_colwidth = 1000
         df = self.model.df
         rows = self.getSelectedRows()[0]
         idx = df.index[rows]
         row = df.loc[idx]
-        text = 'row at index %s' %idx
+        text = '索引 %s 的行' %idx
         dlg = dialogs.TextDialog(self, row.to_string(), title=text, width=800, height=400)
         dlg.exec_()
         return
 
     def renameColumn(self, column=None):
 
-        name, ok = QInputDialog().getText(self, "Enter New Column Name",
-                                             "Name:", QLineEdit.Normal, text=column)
+        name, ok = QInputDialog().getText(self, "输入新列名",
+                             "名称：", QLineEdit.Normal, text=column)
         if ok and name:
             self.model.df.rename(columns={column:name},inplace=True)
             self.refresh()
         return
 
     def setColumnType(self, column=None):
-        """Change the column dtype"""
+        """更改列的数据类型"""
 
         idx = self.getSelectedColumns()
         if len(idx)>0:
@@ -1928,8 +1921,8 @@ class DataFrameTable(QTableView):
         else:
             cols = [column]
         types = ['float','int','object','datetime64[ns]']
-        newtype, ok = QInputDialog().getItem(self, "New Column Type",
-                                             "Type:", types, 0, False)
+        newtype, ok = QInputDialog().getItem(self, "新列类型",
+                             "类型：", types, 0, False)
         if not ok:
             return
         self.storeCurrent()
@@ -1940,7 +1933,7 @@ class DataFrameTable(QTableView):
         return
 
     def zoomIn(self, fontsize=None):
-        """Zoom in table"""
+        """放大表格"""
 
         self.fontsize += 1
         self.updateFont()
@@ -1951,7 +1944,7 @@ class DataFrameTable(QTableView):
         return
 
     def zoomOut(self, fontsize=None):
-        """Zoom out table"""
+        """缩小表格"""
 
         self.fontsize -= 1
         self.updateFont()
@@ -1962,7 +1955,7 @@ class DataFrameTable(QTableView):
         return
 
     def changeColumnWidths(self, factor=1.1):
-        """Set column widths"""
+        """设置列宽"""
 
         for col in range(len(self.model.df.columns)):
             wi = self.columnWidth(col)
@@ -2064,7 +2057,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
                 return QColor(self.bg)
 
     def headerData(self, col, orientation, role):
-        """What's displayed in the headers"""
+        """表头显示内容"""
 
         if role == QtCore.Qt.DisplayRole:
             if orientation == QtCore.Qt.Horizontal:
@@ -2082,7 +2075,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         return None
 
     def setData(self, index, value, role=QtCore.Qt.EditRole):
-        """Set data upon edits"""
+        """在编辑时设置数据"""
 
         i = index.row()
         j = index.column()
@@ -2096,7 +2089,7 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable
 
     def sort(self, idx, ascending=True):
-        """Sort table by given column number """
+        """按给定列号排序表格"""
 
         self.layoutAboutToBeChanged.emit()
         col = self.df.columns[idx]
@@ -2105,14 +2098,14 @@ class DataFrameModel(QtCore.QAbstractTableModel):
         return
 
 class SubTableWidget(DataFrameWidget):
-    """Widget for sub table"""
+    """子表控件"""
     def __init__(self, parent=None, dataframe=None, **args):
 
         DataFrameWidget.__init__(self, parent, dataframe, **args)
         return
 
     def createToolbar(self):
-        """Override default toolbar"""
+        """覆盖默认工具栏"""
 
         self.setLayout(self.layout)
         items = {'copy': {'action':self.copy,'file':'copy'},
@@ -2120,7 +2113,7 @@ class SubTableWidget(DataFrameWidget):
                  'plot': {'action':self.plot,'file':'plot'},
                  'transpose': {'action':self.transpose,'file':'transpose'}
                  }
-        toolbar = QToolBar("Toolbar")
+        toolbar = QToolBar("工具栏")
         toolbar.setOrientation(QtCore.Qt.Vertical)
         dialogs.addToolBarItems(toolbar, self, items)
         self.layout.addWidget(toolbar,1,2)

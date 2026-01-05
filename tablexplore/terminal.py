@@ -1,22 +1,10 @@
 #!/usr/bin/env python
 """
-    Implements some dialog utilities for tableexplore
-    Created Feb 2019
-    Copyright (C) Damien Farrell
+    为 tablexplore 实现一些终端/对话工具
+    创建于 2019 年 2 月
+    版权所有 (C) Damien Farrell
 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    本文件包含终端小部件的实现，用于在应用中提供类似 Python 解释器的交互窗口。
 """
 
 import os, sys, platform
@@ -118,16 +106,16 @@ class Terminal(QPlainTextEdit):
     def contextMenuEvent(self, event):
 
         menu = QMenu(self)
-        menu.addAction("Copy", lambda: self.copy())
-        menu.addAction("Paste", lambda: self.paste())
-        menu.addAction("Clear", lambda: self.clear())
+        menu.addAction("复制", lambda: self.copy())
+        menu.addAction("粘贴", lambda: self.paste())
+        menu.addAction("清除", lambda: self.clear())
         menu.addSeparator()
-        menu.addAction("Zoom In", lambda: self.zoom(1))
-        menu.addAction("Zoom Out", lambda: self.zoom(-1))
-        style_menu = QMenu("Style", menu)
+        menu.addAction("放大", lambda: self.zoom(1))
+        menu.addAction("缩小", lambda: self.zoom(-1))
+        style_menu = QMenu("样式", menu)
         menu.addAction(style_menu.menuAction())
-        style_menu.addAction('Light', lambda: self.setStyle('light'))
-        style_menu.addAction('Dark', lambda: self.setStyle('dark'))
+        style_menu.addAction('浅色', lambda: self.setStyle('light'))
+        style_menu.addAction('深色', lambda: self.setStyle('dark'))
         action = menu.exec_(self.mapToGlobal(event.pos()))
 
     def setStyle(self, style='default'):

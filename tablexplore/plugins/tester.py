@@ -35,12 +35,12 @@ class ExamplePlugin(Plugin):
     #uncomment capabilities list to appear in menu
     capabilities = ['gui','docked']
     requires = ['']
-    menuentry = 'Testing'
+    menuentry = '测试'
     iconfile = 'tests.png'
-    name = 'Testing'
+    name = '测试'
 
     def __init__(self, parent=None, table=None):
-        """Customise this and/or doFrame for your widgets"""
+        """为你的控件定制初始化逻辑或创建布局"""
 
         if parent==None:
             return
@@ -51,12 +51,12 @@ class ExamplePlugin(Plugin):
         return
 
     def _createMenuBar(self):
-        """Create the menu bar for the application. """
+        """为应用创建菜单栏。"""
 
         return
 
     def createWidgets(self):
-        """Create widgets if GUI plugin"""
+        """如果为 GUI 插件，则创建界面控件"""
 
         self.main = QWidget()
         l = self.layout = QHBoxLayout()
@@ -72,22 +72,22 @@ class ExamplePlugin(Plugin):
         bw = QWidget(parent)
         bw.setMaximumWidth(200)
         vbox = QVBoxLayout(bw)
-        button = QPushButton("Plot Test")
+        button = QPushButton("测试绘图")
         button.clicked.connect(self.plotTests)
         vbox.addWidget(button)
-        button = QPushButton("Make Test Data")
+        button = QPushButton("生成测试数据")
         button.clicked.connect(self.tableTests)
         vbox.addWidget(button)
-        button = QPushButton("Colormaps Demo")
+        button = QPushButton("调色板演示")
         button.clicked.connect(self.colorMapDemo)
         vbox.addWidget(button)
-        button = QPushButton("Random Format")
+        button = QPushButton("随机格式")
         button.clicked.connect(self.randomFormat)
         vbox.addWidget(button)
         return bw
 
     def plotTests(self):
-        """Test general plotting"""
+        """测试常规绘图功能"""
 
         self.table.selectAll()
         opts = self.table.pf.opts['general']
@@ -124,7 +124,7 @@ class ExamplePlugin(Plugin):
         return
 
     def randomFormat(self):
-        """Random format settings"""
+        """随机格式设置"""
 
         for k in ['format','labels']:
             opts = self.table.pf.opts[k]
@@ -134,7 +134,7 @@ class ExamplePlugin(Plugin):
         return
 
     def tableTests(self):
-        """Test table functions"""
+        """测试表格相关功能"""
 
         df = util.getSampleData(50,5)
         self.table.table.model.df = df
@@ -142,7 +142,7 @@ class ExamplePlugin(Plugin):
         return
 
     def quit(self, evt=None):
-        """Override this to handle pane closing"""
+        """重写以处理面板关闭"""
 
         self.main.close()
         return

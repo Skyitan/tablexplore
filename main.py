@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 """
-    TablExplore app
-    Created November 2020
+    TableExplore 应用程序
+    创建于 2020 年 11 月
     Copyright (C) Damien Farrell
 
     This program is free software; you can redistribute it and/or
@@ -33,15 +33,15 @@ def main():
     from argparse import ArgumentParser
     parser = ArgumentParser()
     #parser.add_argument("-f", "--file", dest="msgpack",
-    #                    help="Open a dataframe as msgpack", metavar="FILE")
+    #                    help="以 msgpack 格式打开 DataFrame", metavar="FILE")
     parser.add_argument("-p", "--project", dest="project_file",
-                        help="Open a dataexplore project file", metavar="FILE")
+                        help="打开 TableExplore 项目文件", metavar="FILE")
     parser.add_argument("-i", "--csv", dest="csv_file",
-                        help="Import a csv file", metavar="FILE")
+                        help="导入 CSV 文件", metavar="FILE")
     #parser.add_argument("-x", "--excel", dest="excel",
-    #                    help="Import an excel file", metavar="FILE")
+    #                    help="导入 Excel 文件", metavar="FILE")
     #parser.add_argument("-t", "--test", dest="test",  action="store_true",
-    #                    default=False, help="Run a basic test app")
+    #                    default=False, help="运行一个基本测试应用")
     args, unknown = parser.parse_known_args()
     args = vars(args)
     qapp = QApplication(sys.argv)

@@ -1,21 +1,9 @@
 """
+    示例插件（TableExplore）
+    创建于 2021 年 1 月
+    版权所有 (C) Damien Farrell
 
-    Created January 2021
-    Copyright (C) Damien Farrell
-
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    本模块为插件开发示例，包含简单的文本框和表格示例。
 """
 
 from __future__ import absolute_import, division, print_function
@@ -29,16 +17,16 @@ from tablexplore import util, core, dialogs
 from tablexplore.plugin import Plugin
 
 class ExamplePlugin(Plugin):
-    """Template plugin for TableExplore"""
+    """TableExplore 的示例插件模板"""
 
     #uncomment capabilities list to appear in menu
     capabilities = ['gui']
     requires = ['']
-    menuentry = 'Example Plugin'
-    name = 'Example Plugin'
+    menuentry = '示例插件'
+    name = '示例插件'
 
     def __init__(self, parent=None, table=None):
-        """Customise this and/or doFrame for your widgets"""
+        """为你的控件定制初始化逻辑或创建布局"""
 
         if parent==None:
             return
@@ -48,12 +36,12 @@ class ExamplePlugin(Plugin):
         return
 
     def _createMenuBar(self):
-        """Create the menu bar for the application. """
+        """为应用创建菜单栏。"""
 
         return
 
     def createWidgets(self):
-        """Create widgets if GUI plugin"""
+        """如果为 GUI 插件，创建界面控件"""
 
         self.main = QWidget()
 
@@ -63,9 +51,8 @@ class ExamplePlugin(Plugin):
         tb = self.textbox = dialogs.PlainTextEditor()
         tb.resize(300,300)
         layout.addWidget(tb)
-        text = 'This is a sample plugin.\n'\
-        'see https://github.com/dmnfarrell/tablexplore/tree/master/plugins '\
-        'for code examples.'
+        text = '这是一个示例插件。\n'\
+        '有关更多示例代码，请参见 https://github.com/dmnfarrell/tablexplore/tree/master/plugins'
         tb.insertPlainText(text)
         #add a table widget
         t = self.tablewidget = core.DataFrameWidget(self.main, font=core.FONT,
@@ -81,25 +68,25 @@ class ExamplePlugin(Plugin):
 
         bw = QWidget(parent)
         vbox = QVBoxLayout(bw)
-        button = QPushButton("Close")
+        button = QPushButton("关闭")
         button.clicked.connect(self.quit)
         vbox.addWidget(button)
         return bw
 
     def apply(self):
-        """Run something"""
+        """执行操作（自定义实现）"""
 
         return
 
     def quit(self, evt=None):
-        """Override this to handle pane closing"""
+        """重写以处理面板关闭"""
 
         self.main.close()
         return
 
     def about(self):
-        """About this plugin"""
+        """关于此插件"""
 
-        txt = "This plugin implements ...\n"+\
-               "version: %s" %self.version
+        txt = "此插件实现了示例功能...\n"+\
+               "版本: %s" % getattr(self, 'version', '未知')
         return txt

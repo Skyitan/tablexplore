@@ -1,27 +1,13 @@
 
 """
-    TablExplore app
-    Created January 2021
-    Copyright (C) Damien Farrell
+    Qt 导入与兼容层
+    创建于 2021 年 1 月
 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    该文件根据系统上可用的 Qt 绑定（PySide2 或 PyQt5）选择合适的导入，并导出常用 Qt 名称。
 """
 
-# handle qt imports depending on the available Qt python library
-# This uses * imports which are generally frowned upon but tmakes it easier
-# to use the classes in all other modules
+# 根据系统上可用的 Qt 库选择导入（PySide2 优先，否则使用 PyQt5）
+# 使用通配符导入是为了在其它模块中更方便地使用 Qt 类
 
 import sys
 

@@ -1,22 +1,10 @@
 #!/usr/bin/env python
 """
-    Implements the utility methods for tableexplore classes.
-    Created August 2015
-    Copyright (C) Damien Farrell
+    tablexplore 的工具方法集合
+    创建于 2015 年 8 月
+    版权所有 (C) Damien Farrell
 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 3
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    包含通用工具函数：生成示例数据、随机颜色、读取预置数据等。
 """
 
 from __future__ import absolute_import, division, print_function
@@ -40,19 +28,19 @@ def getEmptyData(rows=10,columns=4):
     return df
 
 def gen_lower(n=2):
-    """Generate lower case words"""
+    """生成小写字母字符串"""
     return ''.join(random.choice(string.ascii_lowercase) for i in range(n))
 
 def gen_upper(n=2):
-    """Generate upper case words"""
+    """生成大写字母字符串"""
     return ''.join(random.choice(string.ascii_uppercase) for i in range(n))
 
 def gen_word(n=2):
-    """Generate words with strings or symbols"""
+    """生成包含可打印字符的字符串"""
     return ''.join(random.choice(string.printable) for i in range(n))
 
 def getSampleData(rows=400, cols=5, namelen=2):
-    """Generate sample data"""
+    """生成示例数据（用于测试/演示）"""
 
     if namelen == 1:
         colnames = list(string.ascii_lowercase[:cols])
@@ -72,14 +60,14 @@ def getSampleData(rows=400, cols=5, namelen=2):
     return df
 
 def getPresetData(name):
-    """Get iris dataset"""
+    """读取预置数据集（来自 data/datasets）"""
 
     path = os.path.dirname(__file__)
     df = pd.read_csv(os.path.join(path,'datasets','%s.csv' %name),index_col=0)
     return df
 
 def check_multiindex(index):
-    """Check if index is a multiindex"""
+    """检查索引是否为 MultiIndex"""
 
     if isinstance(index, pd.MultiIndex):
         return 1
@@ -87,7 +75,7 @@ def check_multiindex(index):
         return 0
 
 def getAttributes(obj):
-    """Get non hidden and built-in type object attributes that can be persisted"""
+    """获取可持久化的对象属性（非私有且为基础类型）"""
 
     d={}
     allowed = [str,int,float,list,tuple,bool,matplotlib.figure.Figure]
@@ -103,7 +91,7 @@ def getAttributes(obj):
     return d
 
 def setAttributes(obj, data):
-    """Set attributes from a dict. Used for restoring settings in tables"""
+    """从字典设置属性。用于在表格中恢复设置"""
 
     for key in data:
         try:
@@ -113,7 +101,7 @@ def setAttributes(obj, data):
     return
 
 def checkDict(d):
-    """Check a dict recursively for non serializable types"""
+    """递归检查字典中是否包含不可序列化的类型"""
 
     allowed = [str,int,float,list,tuple,bool]
     for k, v in d.items():
@@ -125,23 +113,25 @@ def checkDict(d):
     return 1
 
 def getFonts():
-     """Get the current list of system fonts"""
+    """获取当前系统可用的字体列表"""
 
-     import matplotlib.font_manager
-     #l = matplotlib.font_manager.get_fontconfig_fonts()
-     l = matplotlib.font_manager.findSystemFonts()
-     fonts = []
-     for fname in l:
-        try: fonts.append(matplotlib.font_manager.FontProperties(fname=fname).get_name())
-        except RuntimeError: pass
-     fonts = list(set(fonts))
-     fonts.sort()
-     #f = matplotlib.font_manager.FontProperties(family='monospace')
-     #print (matplotlib.font_manager.findfont(f))
-     return fonts
+    import matplotlib.font_manager
+    #l = matplotlib.font_manager.get_fontconfig_fonts()
+    l = matplotlib.font_manager.findSystemFonts()
+    fonts = []
+    for fname in l:
+        try:
+            fonts.append(matplotlib.font_manager.FontProperties(fname=fname).get_name())
+        except RuntimeError:
+            pass
+    fonts = list(set(fonts))
+    fonts.sort()
+    #f = matplotlib.font_manager.FontProperties(family='monospace')
+    #print (matplotlib.font_manager.findfont(f))
+    return fonts
 
 def adjustColorMap(cmap, minval=0.0, maxval=1.0, n=100):
-    """Adjust colormap to avoid using white in plots"""
+    """调整 colormap 范围以避免在绘图中使用白色"""
 
     from matplotlib import colors
     new_cmap = colors.LinearSegmentedColormap.from_list(
@@ -150,9 +140,10 @@ def adjustColorMap(cmap, minval=0.0, maxval=1.0, n=100):
     return new_cmap
 
 def colorScale(hex_color, brightness_offset=1):
-    """Takes a hex color and produces a lighter or darker variant.
-    Returns:
-        new color in hex format
+    """根据亮度偏移生成给定十六进制颜色的更亮或更暗变体。
+
+    返回值：
+        以十六进制表示的新颜色字符串
     """
 
     #if not hex_color.startswith('#'):
@@ -167,7 +158,7 @@ def colorScale(hex_color, brightness_offset=1):
     return "#{0:02x}{1:02x}{2:02x}".format(r, g, b)
 
 def random_colors(n=10, seed=1):
-    """Generate random hex colors as list of length n."""
+    """生成长度为 n 的随机十六进制颜色列表。"""
 
     import random
     random.seed(seed)
@@ -179,19 +170,17 @@ def random_colors(n=10, seed=1):
     return clrs
 
 def gen_colors(cmap,n,reverse=False):
-    '''Generates n distinct color from a given colormap.
-    Args:
-        cmap(str): The name of the colormap you want to use.
-            Refer https://matplotlib.org/stable/tutorials/colors/colormaps.html to choose
-            Suggestions:
-            For Metallicity in Astrophysics: Use coolwarm, bwr, seismic in reverse
-            For distinct objects: Use gnuplot, brg, jet,turbo.
-        n(int): Number of colors you want from the cmap you entered.
-        reverse(bool): False by default. Set it to True if you want the cmap result to be reversed.
-    Returns:
-        colorlist(list): A list with hex values of colors.
-    Taken from the mycolorpy package by binodbhttr
-    see also https://matplotlib.org/stable/tutorials/colors/colormaps.html
+    '''从给定的 colormap 中生成 n 个互异颜色。
+
+    参数：
+        cmap(str)：要使用的 colormap 名称。
+        n(int)：需要生成的颜色数量。
+        reverse(bool)：是否反转颜色顺序，默认为 False。
+
+    返回：
+        colorlist(list)：包含十六进制颜色字符串的列表。
+
+    参考：mycolorpy 包的实现和 Matplotlib 的 colormap 文档。
     '''
 
     c_map = plt.cm.get_cmap(str(cmap)) # select the desired cmap
@@ -207,7 +196,7 @@ def gen_colors(cmap,n,reverse=False):
     return colorlist
 
 def show_colors(colors, ax=None):
-    """display a list of colors"""
+    """显示一组颜色"""
 
     if ax == None:
         f,ax = plt.subplots(1,1,figsize=(6,1))

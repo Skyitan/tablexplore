@@ -343,27 +343,26 @@ class Application(QMainWindow):
 
     def createToolBar(self):
         """Create main toolbar"""
+        items = {'新建项目': {'action': lambda: self.newProject(ask=True),'file':'project-new'},
+             '打开': {'action':self.openProject,'file':'document-open'},
+             '保存': {'action': lambda: self.saveProject(None),'file':'save'},
+             '添加工作表': {'action': lambda: self.addSheet(name=None),'file':'add'},
+             '缩小': {'action':self.zoomOut,'file':'zoom-out'},
+             '放大': {'action':self.zoomIn,'file':'zoom-in'},
+             '减小列宽': {'action': lambda: self.changeColumnWidths(.9),'file':'decrease-width'},
+             '增加列宽': {'action': lambda: self.changeColumnWidths(1.1),'file':'increase-width'},                 
+             '添加列': {'action': lambda: self._call('addColumn'),'file':'add-column'},
+             '添加行': {'action': lambda: self._call('addRows'),'file':'add-row'},
+             '清理数据': {'action':lambda: self._call('cleanData'),'file':'clean'},
+             '表格转文本': {'action':lambda: self._call('showAsText'),'file':'tabletotext'},
+             '表格信息': {'action':lambda: self._call('info'),'file':'tableinfo'},
+             '绘图到草稿板': {'action': self.plotToScratchpad,'file':'scratchpad-plot'},
+             '草稿板': {'action': self.showScratchpad,'file':'scratchpad'},
+             '首选项': {'action':self.preferences,'file':'preferences-system'},
+             '退出': {'action':self.fileQuit,'file':'application-exit'}
+            }
 
-        items = {'new project': {'action': lambda: self.newProject(ask=True),'file':'project-new'},
-                 'open': {'action':self.openProject,'file':'document-open'},
-                 'save': {'action': lambda: self.saveProject(None),'file':'save'},
-                 'add sheet': {'action': lambda: self.addSheet(name=None),'file':'add'},
-                 'zoom out': {'action':self.zoomOut,'file':'zoom-out'},
-                 'zoom in': {'action':self.zoomIn,'file':'zoom-in'},
-                 'decrease columns': {'action': lambda: self.changeColumnWidths(.9),'file':'decrease-width'},
-                 'increase columns': {'action': lambda: self.changeColumnWidths(1.1),'file':'increase-width'},                 
-                 'add column': {'action': lambda: self._call('addColumn'),'file':'add-column'},
-                 'add row': {'action': lambda: self._call('addRows'),'file':'add-row'},
-                 'clean data': {'action':lambda: self._call('cleanData'),'file':'clean'},
-                 'table to text': {'action':lambda: self._call('showAsText'),'file':'tabletotext'},
-                 'table info': {'action':lambda: self._call('info'),'file':'tableinfo'},
-                 'send plot to scratchpad': {'action': self.plotToScratchpad,'file':'scratchpad-plot'},
-                 'scratchpad': {'action': self.showScratchpad,'file':'scratchpad'},
-                 'preferences': {'action':self.preferences,'file':'preferences-system'},
-                 'quit': {'action':self.fileQuit,'file':'application-exit'}
-                }
-
-        toolbar = QToolBar("Main Toolbar")
+        toolbar = QToolBar("主工具栏")
         self.addToolBar(toolbar)
         for i in items:
             if 'file' in items[i]:
@@ -380,65 +379,65 @@ class Application(QMainWindow):
     def createMenu(self):
         """Main menu"""
 
-        self.file_menu = QMenu('&File', self)
+        self.file_menu = QMenu('文件', self)
         icon = QIcon(os.path.join(iconpath,'document-new.png'))
-        self.file_menu.addAction(icon, '&New', lambda: self.newProject(ask=True),
+        self.file_menu.addAction(icon, '新建', lambda: self.newProject(ask=True),
                 QtCore.Qt.CTRL + QtCore.Qt.Key_N)
         icon = QIcon(os.path.join(iconpath,'open.png'))
-        self.file_menu.addAction(icon, '&Open', self.openProject,
+        self.file_menu.addAction(icon, '打开', self.openProject,
                 QtCore.Qt.CTRL + QtCore.Qt.Key_O)
-        self.recent_files_menu = QMenu("Recent Projects",
+        self.recent_files_menu = QMenu("最近项目",
             self.file_menu)
         self.file_menu.addAction(self.recent_files_menu.menuAction())
         icon = QIcon(os.path.join(iconpath,'save.png'))
-        self.file_menu.addAction(icon, '&Save', self.saveProject,
+        self.file_menu.addAction(icon, '保存', self.saveProject,
                 QtCore.Qt.CTRL + QtCore.Qt.Key_S)
-        self.file_menu.addAction('&Save As', self.saveAsProject)
-        self.file_menu.addAction('Import CSV file', self.importFile)
-        self.file_menu.addAction('Batch Import', self.importMultiple)
-        self.file_menu.addAction('Import Pickle file', self.importPickle)
-        self.file_menu.addAction('Import HDF5', self.importHDF)
-        self.file_menu.addAction('Import URL', self.importURL)
-        self.file_menu.addAction('Export As', self.exportAs)
+        self.file_menu.addAction('另存为', self.saveAsProject)
+        self.file_menu.addAction('导入 CSV 文件', self.importFile)
+        self.file_menu.addAction('批量导入', self.importMultiple)
+        self.file_menu.addAction('导入 Pickle 文件', self.importPickle)
+        self.file_menu.addAction('导入 HDF5', self.importHDF)
+        self.file_menu.addAction('导入 URL', self.importURL)
+        self.file_menu.addAction('导出为', self.exportAs)
         icon = QIcon(os.path.join(iconpath,'application-exit.png'))
-        self.file_menu.addAction(icon, '&Quit', self.fileQuit,
+        self.file_menu.addAction(icon, '退出', self.fileQuit,
                 QtCore.Qt.CTRL + QtCore.Qt.Key_Q)
         self.menuBar().addMenu(self.file_menu)
 
-        self.edit_menu = QMenu('Edit', self)
+        self.edit_menu = QMenu('编辑', self)
         self.menuBar().addMenu(self.edit_menu)
-        self.undo_item = self.edit_menu.addAction('Undo', self.undo,
+        self.undo_item = self.edit_menu.addAction('撤销', self.undo,
                 QtCore.Qt.CTRL + QtCore.Qt.Key_Z)
         #self.undo_item.setDisabled(True)
         icon = QIcon(os.path.join(iconpath,'copy.png'))
-        self.edit_menu.addAction(icon, 'Copy', self.copy)
+        self.edit_menu.addAction(icon, '复制', self.copy)
         icon = QIcon(os.path.join(iconpath,'paste.png'))
-        self.edit_menu.addAction(icon, 'Paste', self.paste)
+        self.edit_menu.addAction(icon, '粘贴', self.paste)
         icon = QIcon(os.path.join(iconpath,'paste.png'))
-        self.edit_menu.addAction(icon, 'Paste as New Sheet', self.pasteNewSheet)
+        self.edit_menu.addAction(icon, '粘贴为新工作表', self.pasteNewSheet)
         icon = QIcon(os.path.join(iconpath,'findreplace.png'))
-        self.edit_menu.addAction(icon, 'Find/Replace', self.findReplace,
+        self.edit_menu.addAction(icon, '查找/替换', self.findReplace,
                 QtCore.Qt.CTRL + QtCore.Qt.Key_F)
         icon = QIcon(os.path.join(iconpath,'preferences-system.png'))
-        self.edit_menu.addAction(icon, 'Preferences', self.preferences)
+        self.edit_menu.addAction(icon, '首选项', self.preferences)
 
-        self.view_menu = QMenu('View', self)
+        self.view_menu = QMenu('视图', self)
         self.menuBar().addMenu(self.view_menu)
         icon = QIcon(os.path.join(iconpath,'zoom-in.png'))
-        self.view_menu.addAction(icon, 'Zoom In', self.zoomIn,
+        self.view_menu.addAction(icon, '放大', self.zoomIn,
                 QtCore.Qt.CTRL + QtCore.Qt.Key_Equal)
         icon = QIcon(os.path.join(iconpath,'zoom-out.png'))
-        self.view_menu.addAction(icon, 'Zoom Out', self.zoomOut,
+        self.view_menu.addAction(icon, '缩小', self.zoomOut,
                 QtCore.Qt.CTRL + QtCore.Qt.Key_Minus)
         icon = QIcon(os.path.join(iconpath,'decrease-width.png'))
-        self.view_menu.addAction(icon, 'Decrease Column Width', lambda: self.changeColumnWidths(.9))
+        self.view_menu.addAction(icon, '减小列宽', lambda: self.changeColumnWidths(.9))
         icon = QIcon(os.path.join(iconpath,'increase-width.png'))
-        self.view_menu.addAction(icon, 'Increase Column Width', self.changeColumnWidths)
+        self.view_menu.addAction(icon, '增大列宽', self.changeColumnWidths)
         icon = QIcon(os.path.join(iconpath,'preferences-system.png'))
-        action=self.view_menu.addAction(icon, 'Show Plotter', self.showPlotFrame)
+        action=self.view_menu.addAction(icon, '显示绘图窗口', self.showPlotFrame)
         action.setCheckable(True)
 
-        self.theme_menu = QMenu("Themes",  self.view_menu)
+        self.theme_menu = QMenu("主题",  self.view_menu)
         #group = QActionGroup(self.theme_menu)
         #group.setExclusive(True)
         themes = QStyleFactory.keys()
@@ -449,68 +448,68 @@ class Application(QMainWindow):
         self.theme_menu.addAction('Light', lambda: self.setTheme('light'))
         self.view_menu.addAction(self.theme_menu.menuAction())
 
-        self.sheet_menu = QMenu('Sheet', self)
+        self.sheet_menu = QMenu('工作表', self)
         self.menuBar().addMenu(self.sheet_menu)
         icon = QIcon(os.path.join(iconpath,'add.png'))
-        self.sheet_menu.addAction(icon, 'Add', self.addSheet)
-        self.sheet_menu.addAction('Rename', self.renameSheet)
+        self.sheet_menu.addAction(icon, '添加', self.addSheet)
+        self.sheet_menu.addAction('重命名', self.renameSheet)
         icon = QIcon(os.path.join(iconpath,'copy.png'))
         #self.sheet_menu.addAction(icon, 'Copy', self.copySheet)
-        self.sheet_menu.addAction(icon, 'Duplicate', self.duplicateSheet)
-        self.sheet_menu.addAction('Join', self.concatSheets)
+        self.sheet_menu.addAction(icon, '复制', self.duplicateSheet)
+        self.sheet_menu.addAction('合并', self.concatSheets)
         icon = QIcon(os.path.join(iconpath,'merge.png'))
-        self.sheet_menu.addAction(icon, 'Merge', self.mergeSheets)
-        self.sheet_menu.addAction('Clear All', self.clearSheets)
+        self.sheet_menu.addAction(icon, '合并', self.mergeSheets)
+        self.sheet_menu.addAction('清除全部', self.clearSheets)
 
-        self.tools_menu = QMenu('Tools', self)
+        self.tools_menu = QMenu('工具', self)
         icon = QIcon(os.path.join(iconpath,'tableinfo.png'))
-        self.tools_menu.addAction(icon, '&Table Info', lambda: self._call('info'),
+        self.tools_menu.addAction(icon, '表格信息', lambda: self._call('info'),
                 QtCore.Qt.CTRL + QtCore.Qt.Key_I)
-        self.tools_menu.addAction('Manage Columns', lambda: self._call('manageColumns'))
+        self.tools_menu.addAction('管理列', lambda: self._call('manageColumns'))
         icon = QIcon(os.path.join(iconpath,'clean.png'))
-        self.tools_menu.addAction(icon, 'Clean Data', lambda: self._call('cleanData'))
+        self.tools_menu.addAction(icon, '清理数据', lambda: self._call('cleanData'))
         icon = QIcon(os.path.join(iconpath,'table-duplicates.png'))
-        self.tools_menu.addAction(icon, 'Find Duplicates', lambda: self._call('findDuplicates'))
-        self.tools_menu.addAction('Convert Numeric', lambda: self._call('convertNumeric'))
-        self.tools_menu.addAction('Format Column Names', lambda: self._call('convertColumnNames'))
-        self.tools_menu.addAction('Time Series Resample', lambda: self._call('resample'))
+        self.tools_menu.addAction(icon, '查找重复', lambda: self._call('findDuplicates'))
+        self.tools_menu.addAction('转换为数值', lambda: self._call('convertNumeric'))
+        self.tools_menu.addAction('格式化列名', lambda: self._call('convertColumnNames'))
+        self.tools_menu.addAction('时间序列重采样', lambda: self._call('resample'))
         icon = QIcon(os.path.join(iconpath,'tabletotext.png'))
-        self.tools_menu.addAction(icon, '&Table to Text', lambda: self._call('showAsText'),
+        self.tools_menu.addAction(icon, '表格转文本', lambda: self._call('showAsText'),
                 QtCore.Qt.CTRL + QtCore.Qt.Key_T)
         icon = QIcon(os.path.join(iconpath,'interpreter.png'))
-        self.tools_menu.addAction(icon, 'Python Interpreter', self.interpreter)
+        self.tools_menu.addAction(icon, 'Python 解释器', self.interpreter)
         self.menuBar().addMenu(self.tools_menu)
 
-        self.dataset_menu = QMenu('Datasets', self)
+        self.dataset_menu = QMenu('数据集', self)
         self.menuBar().addMenu(self.dataset_menu)
-        self.dataset_menu.addAction('Sample', lambda: self.getSampleData('sample'))
-        self.dataset_menu.addAction('Iris', lambda: self.getSampleData('iris'))
-        self.dataset_menu.addAction('Titanic', lambda: self.getSampleData('titanic'))
-        self.dataset_menu.addAction('Pima Diabetes', lambda: self.getSampleData('pima'))
+        self.dataset_menu.addAction('示例数据', lambda: self.getSampleData('sample'))
+        self.dataset_menu.addAction('Iris (虹膜)', lambda: self.getSampleData('iris'))
+        self.dataset_menu.addAction('Titanic (泰坦尼克号)', lambda: self.getSampleData('titanic'))
+        self.dataset_menu.addAction('Pima 糖尿病', lambda: self.getSampleData('pima'))
 
-        self.scratch_menu = QMenu('Scratchpad', self)
+        self.scratch_menu = QMenu('草稿板', self)
         self.menuBar().addMenu(self.scratch_menu)
         icon = QIcon(os.path.join(iconpath,'scratchpad.png'))
-        self.scratch_menu.addAction(icon,'Show Scratchpad', lambda: self.showScratchpad())
+        self.scratch_menu.addAction(icon,'显示草稿板', lambda: self.showScratchpad())
         icon = QIcon(os.path.join(iconpath,'scratchpad-plot.png'))
-        self.scratch_menu.addAction(icon,'Plot to Scratchpad', lambda: self.plotToScratchpad())
+        self.scratch_menu.addAction(icon,'绘图到草稿板', lambda: self.plotToScratchpad())
         icon = QIcon(os.path.join(iconpath,'scratchpad-table.png'))
-        self.scratch_menu.addAction(icon,'Table to Scratchpad', lambda: self.tableToScratchpad())
+        self.scratch_menu.addAction(icon,'表格到草稿板', lambda: self.tableToScratchpad())
 
-        self.plugin_menu = QMenu('Plugins', self)
+        self.plugin_menu = QMenu('插件', self)
         self.menuBar().addMenu(self.plugin_menu)
 
-        self.dock_menu = QMenu('Docks', self)
+        self.dock_menu = QMenu('停靠窗口', self)
         self.menuBar().addMenu(self.dock_menu)
 
-        self.help_menu = QMenu('&Help', self)
+        self.help_menu = QMenu('帮助', self)
         self.menuBar().addSeparator()
         self.menuBar().addMenu(self.help_menu)
-        self.help_menu.addAction('View Error Log', self.showErrorLog)
+        self.help_menu.addAction('查看错误日志', self.showErrorLog)
         url = 'https://tablexplore.readthedocs.io/en/latest/'
-        self.help_menu.addAction('Online Help', lambda: self.open_url(url))
+        self.help_menu.addAction('在线帮助', lambda: self.open_url(url))
         icon = QIcon(os.path.join(iconpath,'logo.png'))
-        self.help_menu.addAction(icon, 'About', self.about)
+        self.help_menu.addAction(icon, '关于', self.about)
 
         #plot shortcut
         self.plotshc = QShortcut(QKeySequence('Ctrl+P'), self)
@@ -571,8 +570,8 @@ class Application(QMainWindow):
         """New project"""
 
         if ask == True:
-            reply = QMessageBox.question(self, 'Are you sure?',
-                                 'Save current project?',
+            reply = QMessageBox.question(self, '确认',
+                                 '是否保存当前项目？',
                                  QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
             if reply == QMessageBox.Yes:
                 self.saveProject()
@@ -866,9 +865,8 @@ class Application(QMainWindow):
             return
         num_files = len(filenames)
         concat=False
-        reply = QMessageBox.question(self, 'Join Tables?',
-                                 '%s files to be imported. '
-                                 'Do you wish to join them in one table?' %num_files,
+        reply = QMessageBox.question(self, '合并表格？',
+                                 '%s 个文件将被导入。是否将它们合并为一个表？' %num_files,
                                   QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.Yes:
             concat = True
@@ -935,7 +933,7 @@ class Application(QMainWindow):
 
         options = QFileDialog.Options()
         w = self.getCurrentTable()
-        filename, _ = QFileDialog.getSaveFileName(self,"Export",
+        filename, _ = QFileDialog.getSaveFileName(self,"导出",
                              "","csv files (*.csv);;xlsx files (*.xlsx);;xls Files (*.xls);;hdf files (*.hdf5);;All Files (*)",
                              options=options)
         df = w.table.model.df
@@ -989,8 +987,8 @@ class Application(QMainWindow):
         """Remove sheet"""
 
         if ask == True:
-            reply = QMessageBox.question(self, 'Delete this sheet?',
-                                 'Are you sure?', QMessageBox.Yes, QMessageBox.No)
+            reply = QMessageBox.question(self, '删除此表?',
+                                 '确定要删除吗？', QMessageBox.Yes, QMessageBox.No)
             if reply == QMessageBox.No:
                 return False
         name = self.tabs.tabText(index)
@@ -1005,8 +1003,8 @@ class Application(QMainWindow):
             return
         index = self.tabs.currentIndex()
         name = self.tabs.tabText(index)
-        new, ok = QInputDialog.getText(self, 'New name', 'Name:',
-                    QLineEdit.Normal, name)
+        new, ok = QInputDialog.getText(self, '新名称', '名称：',
+                QLineEdit.Normal, name)
         if ok:
             if new in self.sheets:
                 QMessageBox.information(self, "Cannot rename",
@@ -1026,8 +1024,8 @@ class Application(QMainWindow):
         name = self.tabs.tabText(index)
         df = self.sheets[name].table.model.df.copy()
         meta = self.saveMeta(self.sheets[name])
-        new, ok = QInputDialog.getText(self, 'New name', 'Name:',
-                    QLineEdit.Normal, name+'_copy')
+        new, ok = QInputDialog.getText(self, '新名称', '名称：',
+                QLineEdit.Normal, name+'_copy')
         if ok:
             self.addSheet(new, df, meta=meta)
         return
@@ -1092,8 +1090,8 @@ class Application(QMainWindow):
         """Clear all sheets"""
 
         if ask == True:
-            reply = QMessageBox.question(self, 'Clear all sheets?',
-                                 'This will remove all sheets. Are you sure?',
+            reply = QMessageBox.question(self, '清除所有工作表？',
+                                 '此操作将移除所有工作表，确定要继续吗？',
                                  QMessageBox.Yes, QMessageBox.No)
             if reply == QMessageBox.No:
                 return
@@ -1143,9 +1141,9 @@ class Application(QMainWindow):
     def closeEvent(self, event):
         """Close event"""
 
-        reply = QMessageBox.question(self, 'Close',
-                                 'Save current project?',
-                                  QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+        reply = QMessageBox.question(self, '关闭',
+                     '是否保存当前项目？',
+                      QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
         if reply == QMessageBox.Cancel:
             event.ignore()
             return
@@ -1442,7 +1440,7 @@ class Application(QMainWindow):
                 +'Using Python v%s, %s\n' %(pythonver, qtver)\
                 +'pandas v%s, matplotlib v%s' %(pandasver,mplver)
 
-        msg = QMessageBox.about(self, "About", text)
+        msg = QMessageBox.about(self, "关于", text)
         return
 
 def main():
@@ -1453,11 +1451,11 @@ def main():
     #parser.add_argument("-f", "--file", dest="msgpack",
     #                    help="Open a dataframe as msgpack", metavar="FILE")
     parser.add_argument("-p", "--project", dest="project_file",
-                        help="Open a dataexplore project file", metavar="FILE")
+                        help="打开 dataexplore 项目文件", metavar="FILE")
     parser.add_argument("-i", "--csv", dest="csv_file",
-                        help="Import a csv file", metavar="FILE")
+                        help="导入 CSV 文件", metavar="FILE")
     parser.add_argument("-x", "--excel", dest="excel_file",
-                        help="Import an excel file", metavar="FILE")
+                        help="导入 Excel 文件", metavar="FILE")
     args = vars(parser.parse_args())
 
     app = QApplication(sys.argv)

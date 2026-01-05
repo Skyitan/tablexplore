@@ -1,21 +1,9 @@
 """
-    Simple GIS plugin for tablexplore.
-    Created January 2021
-    Copyright (C) Damien Farrell
+    简易 GIS 插件（TableExplore）
+    创建于 2021 年 1 月
+    版权所有 (C) Damien Farrell
 
-    This program is free software; you can redistribute it and/or
-    modify it under the terms of the GNU General Public License
-    as published by the Free Software Foundation; either version 2
-    of the License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    本模块提供基于 geopandas 的简单地图绘制与图层管理功能。
 """
 
 from __future__ import absolute_import, division, print_function
@@ -74,12 +62,12 @@ class GISPlugin(Plugin):
     capabilities = ['gui','docked']
     requires = ['']
     version = 0.1
-    menuentry = 'Simple GIS'
+    menuentry = '简易 GIS'
     iconfile = 'globe.png'
-    name = 'Simple GIS'
+    name = '简易 GIS'
 
     def __init__(self, parent=None, table=None):
-        """Customise this and/or doFrame for your widgets"""
+        """为你的控件定制初始化逻辑或创建布局"""
 
         if parent==None:
             return
@@ -94,53 +82,53 @@ class GISPlugin(Plugin):
         """Main menu"""
 
         self.menubar = QMenuBar(self.main)
-        self.file_menu = QMenu('File', self.main)
-        self.file_menu.addAction('Import', self.importFile)
-        self.file_menu.addAction('Import URL', self.importURL)
-        self.file_menu.addAction('Load Test Map', self.loadTest)
-        self.file_menu.addAction('Load World Map', self.loadWorldMap)
+        self.file_menu = QMenu('文件', self.main)
+        self.file_menu.addAction('导入', self.importFile)
+        self.file_menu.addAction('导入 URL', self.importURL)
+        self.file_menu.addAction('加载测试地图', self.loadTest)
+        self.file_menu.addAction('加载世界地图', self.loadWorldMap)
         self.menubar.addMenu(self.file_menu)
-        self.layers_menu = QMenu('Layers', self.main)
-        self.layers_menu.addAction('Clear', self.clear)
+        self.layers_menu = QMenu('图层', self.main)
+        self.layers_menu.addAction('清除', self.clear)
         self.menubar.addMenu(self.layers_menu)
-        self.tools_menu = QMenu('Tools', self.main)
-        self.tools_menu.addAction('Simulate Shapes', self.simulateShapes)
-        self.geom_menu = QMenu('Geometry', self.tools_menu)
-        self.geom_menu.addAction('Centroid', lambda: self.apply_geometry('centroid'))
-        self.geom_menu.addAction('Boundary', lambda: self.apply_geometry('boundary'))
-        self.geom_menu.addAction('Envelope', lambda: self.apply_geometry('envelope'))
-        self.geom_menu.addAction('Convex hull', lambda: self.apply_geometry('convex_hull'))
-        self.geom_menu.addAction('Buffer', lambda: self.apply_geometry('buffer'))
-        self.geom_menu.addAction('Simplify', lambda: self.apply_geometry('simplify'))
-        self.geom_menu.addAction('Merge Overlapping', self.mergeOverlap)
+        self.tools_menu = QMenu('工具', self.main)
+        self.tools_menu.addAction('模拟图形', self.simulateShapes)
+        self.geom_menu = QMenu('几何', self.tools_menu)
+        self.geom_menu.addAction('质心', lambda: self.apply_geometry('centroid'))
+        self.geom_menu.addAction('边界', lambda: self.apply_geometry('boundary'))
+        self.geom_menu.addAction('包络', lambda: self.apply_geometry('envelope'))
+        self.geom_menu.addAction('凸包', lambda: self.apply_geometry('convex_hull'))
+        self.geom_menu.addAction('缓冲', lambda: self.apply_geometry('buffer'))
+        self.geom_menu.addAction('简化', lambda: self.apply_geometry('simplify'))
+        self.geom_menu.addAction('合并重叠', self.mergeOverlap)
         self.tools_menu.addAction(self.geom_menu.menuAction())
-        self.transform_menu = QMenu('Transform', self.tools_menu)
-        self.transform_menu.addAction('Scale', lambda: self.apply_geometry('scale'))
-        self.transform_menu.addAction('Rotate', lambda: self.apply_geometry('rotate'))
-        self.transform_menu.addAction('Skew', lambda: self.apply_geometry('skew'))
+        self.transform_menu = QMenu('变换', self.tools_menu)
+        self.transform_menu.addAction('缩放', lambda: self.apply_geometry('scale'))
+        self.transform_menu.addAction('旋转', lambda: self.apply_geometry('rotate'))
+        self.transform_menu.addAction('错切', lambda: self.apply_geometry('skew'))
         self.tools_menu.addAction(self.transform_menu.menuAction())
-        self.set_menu = QMenu('Set', self.tools_menu)
-        self.set_menu.addAction('Union', self.overlay)
-        self.set_menu.addAction('Intersection', lambda: self.overlay('intersection'))
-        self.set_menu.addAction('Difference', lambda: self.overlay('difference'))
+        self.set_menu = QMenu('集合', self.tools_menu)
+        self.set_menu.addAction('并集', self.overlay)
+        self.set_menu.addAction('交集', lambda: self.overlay('intersection'))
+        self.set_menu.addAction('差集', lambda: self.overlay('difference'))
         self.tools_menu.addAction(self.set_menu.menuAction())
-        self.analysis_menu = QMenu('Analysis', self.tools_menu)
+        self.analysis_menu = QMenu('分析', self.tools_menu)
         self.tools_menu.addAction(self.analysis_menu.menuAction())
-        self.analysis_menu.addAction('Distance Matrix', self.distanceMatrix)
+        self.analysis_menu.addAction('距离矩阵', self.distanceMatrix)
         #self.analysis_menu.addAction('Nearest Neighbour', self.nearestNeighbour)
         self.menubar.addMenu(self.tools_menu)
-        self.options_menu = QMenu('Options', self.main)
-        self.subplotsaction = QAction('Multiple Subplots', self.options_menu, checkable=True)
+        self.options_menu = QMenu('选项', self.main)
+        self.subplotsaction = QAction('多个子图', self.options_menu, checkable=True)
         self.options_menu.addAction(self.subplotsaction)
         self.menubar.addMenu(self.options_menu)
-        self.help_menu = QMenu('Help', self.main)
+        self.help_menu = QMenu('帮助', self.main)
         self.menubar.addMenu(self.help_menu)
-        self.help_menu.addAction('About', self.about)
+        self.help_menu.addAction('关于', self.about)
         self.menubar.adjustSize()
         return
 
     def createWidgets(self):
-        """Create widgets"""
+        """创建小部件"""
 
         if 'docked' in self.capabilities:
             self.main = QDockWidget()
@@ -152,7 +140,7 @@ class GISPlugin(Plugin):
         self.frame.setLayout(layout)
 
         self.tree = QTreeWidget()
-        self.tree.setHeaderItem(QTreeWidgetItem(["name","file"]))
+        self.tree.setHeaderItem(QTreeWidgetItem(["名称","文件"]))
         self.tree.setColumnWidth(0, 200)
         self.tree.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.tree.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -172,7 +160,7 @@ class GISPlugin(Plugin):
                  'movedown': {'action':lambda: self.moveLayer(-1),'file':'arrow-down'},
                  'delete': {'action':self.delete,'file':'delete'},
                  }
-        toolbar = QToolBar("Toolbar")
+        toolbar = QToolBar("工具栏")
         toolbar.setOrientation(QtCore.Qt.Vertical)
         dialogs.addToolBarItems(toolbar, self.main, items)
         return toolbar
@@ -182,11 +170,11 @@ class GISPlugin(Plugin):
 
         item = self.tree.itemAt( pos )
         menu = QMenu(self.tree)
-        editAction = menu.addAction("Edit Table")
-        propsAction = menu.addAction("Properties")
-        colorAction = menu.addAction("Set Color")
-        deleteAction = menu.addAction("Delete")
-        setfileAction = menu.addAction("Set File")
+        editAction = menu.addAction("编辑表格")
+        propsAction = menu.addAction("属性")
+        colorAction = menu.addAction("设置颜色")
+        deleteAction = menu.addAction("删除")
+        setfileAction = menu.addAction("设置文件")
         action = menu.exec_(self.tree.mapToGlobal(pos))
         if action == editAction:
             self.edit(item)
@@ -231,9 +219,9 @@ class GISPlugin(Plugin):
         """Import shapefile"""
 
         options = QFileDialog.Options()
-        filename, _ = QFileDialog.getOpenFileName(self.main,"Import File",
-                                                  '.',"shapefile (*.shp);;zip (*.zip);;All files (*.*)",
-                                                  options=options)
+        filename, _ = QFileDialog.getOpenFileName(self.main,"导入文件",
+                              '.',"shapefile (*.shp);;zip (*.zip);;All files (*.*)",
+                              options=options)
         if not filename:
             return
         self.importShapefile(filename)
@@ -241,9 +229,9 @@ class GISPlugin(Plugin):
 
     def importURL(self):
 
-        opts = {'url':{'label':'Address','type':'entry','default':'',
-                     'width':600 }}
-        dlg = dialogs.MultipleInputDialog(self.main, opts, title='Import URL', width=600)
+        opts = {'url':{'label':'地址','type':'entry','default':'',
+                 'width':600 }}
+        dlg = dialogs.MultipleInputDialog(self.main, opts, title='导入 URL', width=600)
         dlg.exec_()
         if not dlg.accepted:
             return False
@@ -259,9 +247,9 @@ class GISPlugin(Plugin):
         name = item.text(0)
         layer = self.layers[name]
         options = QFileDialog.Options()
-        filename, _ = QFileDialog.getSaveFileName(self.main,"Save to File",
-                                                  '.',"shapefile (*.shp);;All files (*.*)",
-                                                  options=options)
+        filename, _ = QFileDialog.getSaveFileName(self.main,"保存到文件",
+                              '.',"shapefile (*.shp);;All files (*.*)",
+                              options=options)
         ext = os.path.splitext(filename)[1]
         if ext != '.shp':
             filename += '.shp'
@@ -411,8 +399,8 @@ class GISPlugin(Plugin):
     def clear(self):
         """Clear all layers"""
 
-        reply = QMessageBox.question(self.main, 'Clear All',
-                             'Are you sure?', QMessageBox.Yes, QMessageBox.No)
+        reply = QMessageBox.question(self.main, '清除所有图层',
+                     '确定要清除所有图层吗？', QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.No:
             return False
         self.layers = {}
@@ -462,7 +450,7 @@ class GISPlugin(Plugin):
                 'labelsize':  {'type':'spinbox','default':layer.labelsize,'range':(5,40)},
                 'cmap': {'type':'combobox','default':layer.colormap,'items':colormaps},
                 }
-        dlg = dialogs.MultipleInputDialog(self.main, opts, title='Layer Properties', width=200)
+        dlg = dialogs.MultipleInputDialog(self.main, opts, title='图层属性', width=200)
         dlg.exec_()
         if not dlg.accepted:
             return False
@@ -550,7 +538,7 @@ class GISPlugin(Plugin):
 
         cols = list(layer.gdf.columns)
         opts = {'index':{'type':'combobox','default':cols[0],'items':cols}}
-        dlg = dialogs.MultipleInputDialog(self.main, opts, title='distance matrix', width=200)
+        dlg = dialogs.MultipleInputDialog(self.main, opts, title='距离矩阵', width=200)
         dlg.exec_()
         if not dlg.accepted:
             return False
@@ -589,7 +577,7 @@ class GISPlugin(Plugin):
                 'bounds':{'type':'entry','default':'0,0,50,50'},
                 }
 
-        dlg = dialogs.MultipleInputDialog(self.main, opts, title='Make Shapes', width=200)
+        dlg = dialogs.MultipleInputDialog(self.main, opts, title='生成图形', width=200)
         dlg.exec_()
         if not dlg.accepted:
             return False
@@ -622,14 +610,12 @@ class GISPlugin(Plugin):
         return
 
     def about(self):
-        """About this plugin"""
+        """关于此插件"""
 
-        text = "This plugin implements a simple GIS "+\
-                "plugin with the ability to load and plot shapefiles. "+\
-                "Version: %s" %version
+        text = "此插件实现了一个简单的 GIS 插件，支持加载并绘制 shapefile。"+\
+                "版本: %s" % version
 
-        #icon = QIcon(os.path.join(core.pluginiconpath,self.iconfile))
-        msg = QMessageBox.about(self.main, "About", text)
+        msg = QMessageBox.about(self.main, "关于", text)
         return
 
 # module level functions
